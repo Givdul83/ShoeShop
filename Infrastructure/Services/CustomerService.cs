@@ -1,15 +1,19 @@
 ﻿
+using Infrastructure.Contexts;
 using Infrastructure.Dtos;
 using Infrastructure.Entities;
 using Infrastructure.Factories;
 using Infrastructure.Repositories;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Services;
 
 public class CustomerService(AddressRepository addressRepository, ProfileRepository profileRepository, CustomerRepository customerRepository, CustomerTypeRepository customerTypeRepository, ProfileAddressRepository profileAddressRepository)
 {
+
     private readonly AddressRepository _addressRepository = addressRepository;
     private readonly ProfileRepository _profileRepository = profileRepository;
     private readonly CustomerRepository _customerRepository = customerRepository;
@@ -20,12 +24,9 @@ public class CustomerService(AddressRepository addressRepository, ProfileReposit
     {
         try
         {
-            if (!await ControlUserExist(customerDto.Email))
+            if (!await ControlCustomerExist(customerDto.Email))
             {
-                var customerTypeEntity = await _customerTypeRepository.CreateAsync(new CustomerTypeEntity
-                {
-                    TypeOfCustomer = customerDto.CustomerType
-                });
+                var customerTypeEntity = await _customerTypeRepository.CreateAsync(customerDto.CustomerType);
 
                 var customerEntity = await _customerRepository.CreateAsync(new CustomerEntity
                 {
@@ -34,24 +35,14 @@ public class CustomerService(AddressRepository addressRepository, ProfileReposit
                     Email = customerDto.Email,
                     CustomerTypeId = customerTypeEntity.Id
                 });
-
-
-
                 var profileEntity = await _profileRepository.CreateAsync(new ProfileEntity
                 {
                     FirstName = customerDto.FirstName,
                     LastName = customerDto.LastName,
                     CustomerId = customerEntity.Id
                 });
+                var addressEntity = await _addressRepository.CreateAsync(customerDto.StreetName, customerDto.PostalCode, customerDto.City);
 
-                var addressEntity = await _addressRepository.CreateAsync(new AddressEntity
-                {
-                    StreetName = customerDto.StreetName,
-                    City = customerDto.City,
-                    PostalCode = customerDto.PostalCode
-                });
-
-                
                 var profileAddress = await _profileAddressRepository.CreateAsync(new ProfileAddressEntity
                 {
                     AddressId = addressEntity.Id,
@@ -66,15 +57,14 @@ public class CustomerService(AddressRepository addressRepository, ProfileReposit
                 Console.WriteLine("GIck ej");
                 return false;
             }
-
         }
         catch (Exception ex)
         {
             Debug.WriteLine("ERROR:: CreateCustomerDto" + ex.Message);
-             return false;
+            return false;
         }
     }
-    public async Task<bool> ControlUserExist(string email)
+    public async Task<bool> ControlCustomerExist(string email)
     {
         if (await _customerRepository.ExistAsync(x => x.Email == email))
         {
@@ -86,102 +76,100 @@ public class CustomerService(AddressRepository addressRepository, ProfileReposit
 
     }
 
+    public async Task<bool> DeleteCustomer(string email)
+    {
+        try
+        {
 
+            if (!await ControlCustomerExist(email))
+            {
+
+                Console.WriteLine("Customer not found");
+                return false;
+            }
+            var customerToDelete = await _customerRepository.GetOneAsync(x => x.Email == email);
+            if (customerToDelete != null)
+            {
+                var profileToDelete = await _profileRepository.GetOneAsync(x => x.CustomerId == customerToDelete.Id);
+                if (profileToDelete != null)
+                {
+                    var profileAddressToDelete = await _profileAddressRepository.GetOneAsync(x => x.ProfileId == profileToDelete.Id);
+                    if (profileAddressToDelete != null)
+                        await _profileAddressRepository.DeleteAsync(profileAddressToDelete);
+                    await _profileRepository.DeleteAsync(profileToDelete);
+                    await _customerRepository.DeleteAsync(customerToDelete);
+
+                    Console.WriteLine("CustomerDeleted");
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        catch (Exception ex)
+        {
+            Debug.WriteLine("Error DeleteCustomer:: " + ex.Message);
+            return false;
+        }
+
+    }
+
+    public async Task<NewCustomerDto> FindCustomer(string email)
+    {
+        try
+        {
+            var foundCustomer = await _customerRepository.GetOneAsync(x => x.Email == email);
+            if(foundCustomer != null)
+            {
+                var foundCustomerType = await _customerTypeRepository.GetOneAsync(x => x.Id == foundCustomer.CustomerTypeId);
+                if(foundCustomerType != null)
+                { 
+                    var foundProfile = await _profileRepository.GetOneAsync(x => x.CustomerId == foundCustomer.Id);
+                    if(foundProfile != null)
+                    {
+                        var foundProfileAddress = await _profileAddressRepository.GetOneAsync(x => x.ProfileId == foundProfile.Id);
+                        if( foundProfileAddress != null) 
+                        {
+                            var foundAddress = await _addressRepository.GetOneAsync(x => x.Id == foundProfileAddress.AddressId);
+                            if (foundAddress != null)
+                            {
+                                var foundCustomerDto = new NewCustomerDto
+                                {
+                                    Email = foundCustomer.Email,
+                                    FirstName = foundProfile.FirstName,
+                                    LastName = foundProfile.LastName,
+                                    StreetName = foundAddress.StreetName,
+                                    PostalCode = foundAddress.PostalCode,
+                                    City = foundAddress.City,
+                                    CustomerType = foundCustomerType.TypeOfCustomer
+                                };
+                                return foundCustomerDto;
+                                   
+                                }
+                            }
+                        }
+                    }
+                
+                  
+                }
+            return null!;
+            }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("Error:: FindCustomer" +ex.Message);
+            return null!;
+        }
+
+    }
 }
 
 
-    //public bool AddCustomer(CustomerDto customer)
-    //{
-
-
-    //    if (!_customerRepository.Exist(x => x.Email == customer.Email))
-    //    {
-    //        var customerEntity = _customerRepository.GetOne(x => x.Email == customer.Email);
-    //        customerEntity ??= _customerRepository.Create(new CustomerEntity
-    //        {
-    //            Email = customer.Email
-    //        });
 
 
 
 
-    //        var profileEntity = _profileRepository.GetOne(x => x.CustomerId == customerEntity.Id);
-    //        profileEntity ??= _profileRepository.Create(new ProfileEntity
-    //        {
-    //            FirstName = customer.FirstName,
-    //            LastName = customer.LastName,
-    //            CustomerId = customerEntity.Id
-    //        });
 
-    //        var addressEntity = _addressRepository.GetOne(x => x.StreetName== customer.StreetName && x.PostalCode == customer.PostalCode && x.City == customer.City);
-    //        addressEntity ??=  _addressRepository.Create(new AddressEntity
-    //        {
-    //            StreetName = customer.StreetName,
-    //            City = customer.City,
-    //            PostalCode = customer.PostalCode,
-    //        });
-
-    //        var customerTypeEntity = _customerTypeRepository.GetOne(x => x.TypeOfCustomer == customer.CustomerType);
-    //           customerTypeEntity ??=_customerTypeRepository.Create(new CustomerTypeEntity
-    //        {
-    //            TypeOfCustomer = customer.CustomerType
-    //        });
-
-    //        var profileAdressEntity = _profileAddressRepository.Create(new ProfileAddressEntity
-    //        {
-    //            AddressId = addressEntity.Id,
-    //            ProfileId = profileEntity.Id
-    //        });
-
-    //        return true;
-    //    }
-               
-      //else { return false; }    
     
-
-      //  }
-
-
-
-        //var newCustomer = new CustomerDto();
-
-        //newCustomer.FirstName = _customer.FirstName;
-        //newCustomer.LastName = _customer.LastName; 
-        //newCustomer.Email = _customer.Email;
-        //newCustomer.CustomerType = _customer.CustomerType;
-        //newCustomer.StreetName = _customer.StreetName;
-        //newCustomer.PostalCode = _customer.PostalCode;
-        //newCustomer.City = _customer.City;
-
-        //var customer = new CustomerEntity();
-
-        //customer.Email = _customer.Email;
-        //customer.Created = DateTime.Now;
-        //customer.Id = new Guid();
-
-        //_customerRepository.Create(customer);
-
-        //var profile = new ProfileEntity();
-
-        //profile.FirstName = _customer.FirstName;
-        //profile.LastName = _customer.LastName;  
-     
-        //_profileRepository.Create(profile);
-
-        //var customerType= new CustomerTypeEntity();
-
-        //customerType.TypeOfCustomer = _customer.CustomerType;
-
-        //_customerTypeRepository.Create(customerType);
-
-        //var address = new AddressEntity();
-
-        //address.StreetName = _customer.StreetName;
-        //address.PostalCode = _customer.PostalCode;
-        //address.City = _customer.City;
-
-        //_addressRepository.Create(address);
-
         
     
 

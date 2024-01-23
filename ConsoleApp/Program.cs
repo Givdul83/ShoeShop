@@ -28,21 +28,60 @@ Console.Clear();
 
 var customerService = builder.Services.GetRequiredService<CustomerService>();
 
-var result= await customerService.CreateCustomerDto(new NewCustomerDto
-    {
+var result = await customerService.CreateCustomerDto(new NewCustomerDto
+{
 
-    FirstName = "Leo",
-    LastName = "Bus",
-    Email = "Leo@gmail.com",
-    StreetName = "Hökgatan 1",
-    City = "Arboga",
-    PostalCode = "12345",
-    CustomerType = "Company"
+    FirstName = "Ludvig",
+    LastName = "Vinoy",
+    Email = "Ludde@gmail.com",
+    StreetName = "Duvgatan 1",
+    City = "Örebro",
+    PostalCode = "72345",
+    CustomerType = "Private"
 });
 
 
 
 {
-    Console.WriteLine(result? "Operation Good" : "Failed");
+    Console.WriteLine(result ? "Operation Good" : "Failed");
+}
+Console.ReadKey();
+Console.Clear();
+//var emailcustomerToDelete = "john@gmail.com";
+//var delete = await customerService.DeleteCustomer(emailcustomerToDelete);
+
+//Console.WriteLine(delete ? "customer Deleted" : "Not Deleted");
+
+//Console.ReadKey();
+Console.Clear();
+var searchedEmail = "Ludde@gmail.com";
+
+var foundCustomer= await customerService.FindCustomer(searchedEmail);
+if (foundCustomer != null) 
+    {
+    Console.WriteLine("Customer found");
+    Console.WriteLine();
+    Console.Write($"First Name: {foundCustomer.FirstName}");
+    Console.WriteLine();
+    Console.Write($"Last Name: {foundCustomer.LastName}");
+    Console.WriteLine();
+    Console.Write($"Email: {foundCustomer.Email}");
+    Console.WriteLine();
+    Console.Write($"Street: {foundCustomer.StreetName}");
+    Console.WriteLine();
+    Console.Write($"PostalCode: {foundCustomer.PostalCode}");
+    Console.WriteLine();
+    Console.Write($"City: {foundCustomer.City}"); 
+    Console.WriteLine();
+    Console.Write($"Type of Customer: {foundCustomer.CustomerType}");
+    Console.WriteLine();
+    Console.ReadKey();
+    }
+else
+{
+    Console.WriteLine("fucking failed");
 }
 
+
+
+   

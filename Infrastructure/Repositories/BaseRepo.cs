@@ -15,6 +15,8 @@ public abstract class BaseRepo<TEntity, TContext> where TEntity : class where TC
         _context = context;
     }
 
+   
+
     public virtual async Task <TEntity> CreateAsync(TEntity entity)
     {
         try
