@@ -73,7 +73,7 @@ public abstract class BaseRepo<TEntity, TContext> where TEntity : class where TC
     {
         try
         {
-            var entityToUpdate = await _context.Set<TEntity>().FirstOrDefaultAsync();
+            var entityToUpdate = await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
             if (entityToUpdate != null)
             {
                 _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);

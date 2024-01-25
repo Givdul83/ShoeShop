@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.Dtos;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,5 +22,16 @@ public class AddressEntity
     [Column(TypeName = "nvarchar(50)")]
     public string City { get; set; } = null!;
 
-    
+    public virtual ICollection<ProfileAddressEntity> ProfileAddresses { get; set; }= new List<ProfileAddressEntity>();
+
+    public static implicit operator AddressEntity(CustomerDtoReg dtoReg)
+    {
+        var addressEntity = new AddressEntity
+        {
+            StreetName = dtoReg.StreetName,
+            PostalCode = dtoReg.PostalCode,
+            City = dtoReg.City,
+        };
+        return addressEntity;
+    }
 }

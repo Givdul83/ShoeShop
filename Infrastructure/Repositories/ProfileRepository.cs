@@ -10,9 +10,31 @@ public class ProfileRepository(CustomerDbContext context) : BaseRepo<ProfileEnti
 {
     private readonly CustomerDbContext _context = context;
 
-    public async Task DeleteAsync(ProfileEntity entity)
-    {
-        _context.Profiles.Remove(entity);
-        await _context.SaveChangesAsync();
+    //public async Task DeleteAsync(ProfileEntity entity)
+    //{
+    //    _context.Profiles.Remove(entity);
+    //    await _context.SaveChangesAsync();
+    //}
+
+    //public async Task<ProfileEntity> UpdateProfileAsync(ProfileEntity entity)
+    //{
+    //        try
+    //        {
+    //            var entityToUpdate = await _context.Set<ProfileEntity>().FirstOrDefaultAsync(x => x.CustomerId == entity.CustomerId);
+    //            if (entityToUpdate != null)
+    //            {
+    //            entityToUpdate.FirstName= entity.FirstName;
+    //            entityToUpdate.LastName= entity.LastName;
+
+    //            await _context.SaveChangesAsync();
+    //                return entityToUpdate;
+    //            }
+    //            return null!;
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            Debug.WriteLine("Error :: ProfileUpdate" + ex.Message);
+    //            return null!;
+    //        }
+    //    }
     }
-}

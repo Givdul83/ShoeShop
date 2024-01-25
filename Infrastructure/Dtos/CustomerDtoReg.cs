@@ -1,7 +1,7 @@
 ﻿
 namespace Infrastructure.Dtos;
 
-public class NewCustomerDto
+public class CustomerDtoReg
 {
 
     public string FirstName { get; set; } = null!;

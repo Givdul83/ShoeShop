@@ -39,12 +39,7 @@ public partial class CustomerDbContext : DbContext
         modelBuilder.Entity<ProfileAddressEntity>()
             .HasKey(x => new { x.AddressId, x.ProfileId });
 
-        modelBuilder.Entity<CustomerTypeEntity>()
-            .HasIndex(x=> x.TypeOfCustomer)
-            .IsUnique();
-
-        modelBuilder.Entity<ProfileEntity>()
-            .HasAlternateKey(x => x.CustomerId);
+        
             
     }
 }

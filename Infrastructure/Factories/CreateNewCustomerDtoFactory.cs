@@ -6,11 +6,11 @@ namespace Infrastructure.Factories;
 
 public static class CreateNewCustomerDtoFactory
 {
-    public static NewCustomerDto Create(string firstname, string lastName, string email, string streetName, string postalCode, string city, string customerType)
+    public static CustomerDtoReg Create(string firstname, string lastName, string email, string streetName, string postalCode, string city, string customerType)
     {
         try
         {
-            var customerDto = new NewCustomerDto
+            var customerDto = new CustomerDtoReg
             {
                 FirstName = firstname,
                 LastName = lastName,
