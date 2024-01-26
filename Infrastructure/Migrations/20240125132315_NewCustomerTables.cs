@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class FiveCustomerTables : Migration
+    public partial class NewCustomerTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -27,20 +27,6 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customers",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CustomerTypeId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CustomersTypes",
                 columns: table => new
                 {
@@ -54,14 +40,34 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CustomerTypeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Customers_CustomersTypes_CustomerTypeId",
+                        column: x => x.CustomerTypeId,
+                        principalTable: "CustomersTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Profiles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(50)", nullable: false)
+                    LastName = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -105,15 +111,14 @@ namespace Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Customers_CustomerTypeId",
+                table: "Customers",
+                column: "CustomerTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Customers_Email",
                 table: "Customers",
                 column: "Email",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CustomersTypes_TypeOfCustomer",
-                table: "CustomersTypes",
-                column: "TypeOfCustomer",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -132,9 +137,6 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CustomersTypes");
-
-            migrationBuilder.DropTable(
                 name: "ProfileAddresses");
 
             migrationBuilder.DropTable(
@@ -145,6 +147,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "CustomersTypes");
         }
     }
 }

@@ -17,7 +17,7 @@ var builder = Host.CreateDefaultBuilder().ConfigureServices(services =>
     services.AddSingleton<ProfileRepository>();
     services.AddSingleton<CustomerTypeRepository>();
     services.AddSingleton<ProfileAddressRepository>();
-    services.AddSingleton<CustomerService>();
+    services.AddSingleton<BaseService>();
 
 }).Build();
 
@@ -26,7 +26,7 @@ builder.Start();
 Console.ReadKey();
 Console.Clear();
 
-var customerService = builder.Services.GetRequiredService<CustomerService>();
+var customerService = builder.Services.GetRequiredService<BaseService>();
 
 //var result = await customerService.CreateCustomer(new CustomerDtoReg
 //{

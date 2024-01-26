@@ -1,7 +1,7 @@
 ﻿
 namespace Infrastructure.Dtos;
 
-public class CustomerDtoReg
+public class UserRegDto
 {
 
     public string FirstName { get; set; } = null!;
@@ -14,7 +14,7 @@ public class CustomerDtoReg
 
     public string PostalCode = null!;
 
-    public string CustomerType { get; set; } = null!;
+    public string TypeOfCustomer { get; set; } = null!;
 
     }
 

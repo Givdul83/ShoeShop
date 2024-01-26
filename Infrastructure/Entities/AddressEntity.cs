@@ -24,7 +24,7 @@ public class AddressEntity
 
     public virtual ICollection<ProfileAddressEntity> ProfileAddresses { get; set; }= new List<ProfileAddressEntity>();
 
-    public static implicit operator AddressEntity(CustomerDtoReg dtoReg)
+    public static implicit operator AddressEntity(UserRegDto dtoReg)
     {
         var addressEntity = new AddressEntity
         {

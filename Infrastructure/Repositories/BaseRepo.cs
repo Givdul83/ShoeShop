@@ -14,9 +14,6 @@ public abstract class BaseRepo<TEntity, TContext> where TEntity : class where TC
     {
         _context = context;
     }
-
-   
-
     public virtual async Task <TEntity> CreateAsync(TEntity entity)
     {
         try
@@ -37,7 +34,7 @@ public abstract class BaseRepo<TEntity, TContext> where TEntity : class where TC
         try
         {
             var entities = await _context.Set<TEntity>().ToListAsync();
-            if (entities.Count != 0)
+            if (entities != null)
             {
                 return entities;
             }
@@ -49,18 +46,15 @@ public abstract class BaseRepo<TEntity, TContext> where TEntity : class where TC
             return null!;
         }
 
-    public virtual async Task<TEntity> GetOneAsync(Expression<Func<TEntity, bool>> predicate)
+    public virtual async Task<TEntity> GetOneAsync(Expression<Func<TEntity, bool>> expression)
     {
         try
         {
-            var entity = await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
+            var entity = await _context.Set<TEntity>().FirstOrDefaultAsync(expression);
             if (entity != null)
             {
                 return entity;
             }
-           
-
-
         }
         catch (Exception ex)
         {
@@ -69,17 +63,17 @@ public abstract class BaseRepo<TEntity, TContext> where TEntity : class where TC
             return null!;
           }
 
-    public virtual async Task <TEntity> UpdateAsync(Expression<Func<TEntity, bool >> predicate, TEntity entity)
+    public virtual async Task <TEntity> UpdateAsync(Expression<Func<TEntity, bool >> expression, TEntity updatedEntity)
     {
         try
         {
-            var entityToUpdate = await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
-            if (entityToUpdate != null)
+            var existing = await _context.Set<TEntity>().FirstOrDefaultAsync(expression);
+            if (existing != null)
             {
-                _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+                _context.Entry(existing).CurrentValues.SetValues(updatedEntity);
                 await _context.SaveChangesAsync();
 
-                return entityToUpdate;
+                return existing ;
             }
         }
         catch (Exception ex)
@@ -89,11 +83,11 @@ public abstract class BaseRepo<TEntity, TContext> where TEntity : class where TC
         return null!;
     }
 
-    public virtual async Task <bool> DeleteAsync(Expression<Func<TEntity, bool>> predicate)
+    public virtual async Task <bool> DeleteAsync(Expression<Func<TEntity, bool>> expression)
     {
         try
         {
-            var entity = await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
+            var entity = await _context.Set<TEntity>().FirstOrDefaultAsync(expression);
             if (entity != null)
             {
                 _context.Set<TEntity>().Remove(entity);
@@ -108,12 +102,13 @@ public abstract class BaseRepo<TEntity, TContext> where TEntity : class where TC
             return false;
         }
 
-    public virtual async Task <bool> ExistAsync(Expression<Func<TEntity, bool>> predicate)
+    public virtual async Task <bool> ExistAsync(Expression<Func<TEntity, bool>> expression)
     {
         try
         {
-            var entityFound = await _context.Set<TEntity>().AnyAsync(predicate);
-            return entityFound;
+            var entityFound = await _context.Set<TEntity>().AnyAsync(expression);   
+             return entityFound;
+            
 
         }
         catch (Exception ex)

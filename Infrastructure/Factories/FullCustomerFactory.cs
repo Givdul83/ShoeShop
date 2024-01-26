@@ -8,7 +8,7 @@ namespace Infrastructure.Factories;
 
 public static class FullCustomerFactory
 {
-    public static CustomerDtoReg Create(CustomerDtoReg newCustomerDto)
+    public static UserRegDto Create(UserRegDto newCustomerDto)
     {
         try
         {
@@ -18,7 +18,7 @@ public static class FullCustomerFactory
             var customerTypeEntity = CustomerTypeFactory.CreateCustomerType(newCustomerDto.CustomerType);
 
 
-            CustomerDtoReg createdCustomerDto = new CustomerDtoReg
+            UserRegDto createdCustomerDto = new UserRegDto
             {
                 Email = customerEntity.Email,
                 FirstName = profileEntity.FirstName,

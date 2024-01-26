@@ -17,11 +17,11 @@ public class CustomerTypeEntity
     public virtual ICollection<CustomerEntity> Customers { get; set; } = new List<CustomerEntity>();
 
 
-    public static implicit operator CustomerTypeEntity(CustomerDtoReg dtoReg)
+    public static implicit operator CustomerTypeEntity(UserRegDto dtoReg)
     {
         var customerTypeEntity= new CustomerTypeEntity
         {
-            TypeOfCustomer = dtoReg.CustomerType
+            TypeOfCustomer = dtoReg.TypeOfCustomer
         };
         return customerTypeEntity;
         }

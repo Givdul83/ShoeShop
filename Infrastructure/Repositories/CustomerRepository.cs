@@ -6,39 +6,48 @@ using System.Linq.Expressions;
 
 namespace Infrastructure.Repositories;
 
-public class CustomerRepository(CustomerDbContext context) : BaseRepo<CustomerEntity,CustomerDbContext>(context)
+public class CustomerRepository(CustomerDbContext context) : BaseRepo<CustomerEntity, CustomerDbContext>(context)
 {
 
     private readonly CustomerDbContext _context = context;
 
-    //public async Task DeleteAsync(CustomerEntity entity)
-    //{
-    //    _context.Customers.Remove(entity);
-    //    await _context.SaveChangesAsync();
-        
-    //}
+    public override async Task<IEnumerable<CustomerEntity>> GetAllAsync()
+    {
+        try
+        {
+            var entities = await _context.Customers.Include(p => p.Profile).ThenInclude(pa =>pa.ProfileAddresses)
+                .ThenInclude(a =>a.Address)
+                .Include(ct => ct.CustomerType).ToListAsync();
+            {
+                return entities;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("ERROR GetAllCustomerEntitiesAsync::" + ex.Message);
+        }
+        return null!;
+    }
 
-    //public async Task<CustomerEntity> UpdateCustomerAsync(CustomerEntity entity)
-    //{
-    //    try
-    //    {
-
-    //        var entityToUpdate = await _context.Set<CustomerEntity>().FirstOrDefaultAsync(x => x.Email == entity.Email);
-    //        if (entityToUpdate != null)
-    //        {
-
-    //           entityToUpdate.CustomerTypeId = entity.CustomerTypeId;
-
-    //            await _context.SaveChangesAsync();
-
-    //            return entityToUpdate;
-    //        }
-    //        return null!;
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Debug.WriteLine("Error :: CustomerAsyncUpdate" + ex.Message);
-    //        return null!;
-    //    }
-    //}
-}
+    public override async Task<CustomerEntity> GetOneAsync(Expression<Func<CustomerEntity, bool>> expression)
+    {
+        try
+        {
+            var entity = await _context.Set<CustomerEntity>().Include(p => p.Profile).ThenInclude(pa => pa.ProfileAddresses)
+                .ThenInclude(a => a.Address)
+                .Include(ct => ct.CustomerType).
+                FirstOrDefaultAsync(expression);
+            if (entity != null)
+            {
+                return entity;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("ERROR GetOneCustomerEntityAsync::" + ex.Message);
+        }
+        return null!;
+    }
+      
+    
+} 

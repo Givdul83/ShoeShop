@@ -68,6 +68,8 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerTypeId");
+
                     b.HasIndex("Email")
                         .IsUnique();
 
@@ -87,9 +89,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TypeOfCustomer")
-                        .IsUnique();
 
                     b.ToTable("CustomersTypes");
                 });
@@ -136,16 +135,27 @@ namespace Infrastructure.Migrations
                     b.ToTable("Profiles");
                 });
 
+            modelBuilder.Entity("Infrastructure.Entities.CustomerEntity", b =>
+                {
+                    b.HasOne("Infrastructure.Entities.CustomerTypeEntity", "CustomerType")
+                        .WithMany("Customers")
+                        .HasForeignKey("CustomerTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CustomerType");
+                });
+
             modelBuilder.Entity("Infrastructure.Entities.ProfileAddressEntity", b =>
                 {
                     b.HasOne("Infrastructure.Entities.AddressEntity", "Address")
-                        .WithMany()
+                        .WithMany("ProfileAddresses")
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Infrastructure.Entities.ProfileEntity", "Profile")
-                        .WithMany()
+                        .WithMany("ProfileAddresses")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -166,10 +176,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("Infrastructure.Entities.AddressEntity", b =>
+                {
+                    b.Navigation("ProfileAddresses");
+                });
+
             modelBuilder.Entity("Infrastructure.Entities.CustomerEntity", b =>
                 {
                     b.Navigation("Profile")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Infrastructure.Entities.CustomerTypeEntity", b =>
+                {
+                    b.Navigation("Customers");
+                });
+
+            modelBuilder.Entity("Infrastructure.Entities.ProfileEntity", b =>
+                {
+                    b.Navigation("ProfileAddresses");
                 });
 #pragma warning restore 612, 618
         }

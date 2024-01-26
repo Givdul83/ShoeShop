@@ -17,13 +17,13 @@ public class ProfileEntity
     [Required]
     [Column(TypeName = "nvarchar(50)")]
     public string LastName { get; set; } = null!;
-
+    
     public Guid CustomerId { get; set; }
     public CustomerEntity Customer { get; set; } = null!;
 
     public virtual ICollection<ProfileAddressEntity> ProfileAddresses { get; set; } = new List<ProfileAddressEntity>();
 
-    public static implicit operator ProfileEntity(CustomerDtoReg dtoReg)
+    public static implicit operator ProfileEntity(UserRegDto dtoReg)
     {
         var profileEntity= new ProfileEntity
         {

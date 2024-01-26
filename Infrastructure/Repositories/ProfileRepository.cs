@@ -10,31 +10,44 @@ public class ProfileRepository(CustomerDbContext context) : BaseRepo<ProfileEnti
 {
     private readonly CustomerDbContext _context = context;
 
-    //public async Task DeleteAsync(ProfileEntity entity)
-    //{
-    //    _context.Profiles.Remove(entity);
-    //    await _context.SaveChangesAsync();
-    //}
-
-    //public async Task<ProfileEntity> UpdateProfileAsync(ProfileEntity entity)
-    //{
-    //        try
-    //        {
-    //            var entityToUpdate = await _context.Set<ProfileEntity>().FirstOrDefaultAsync(x => x.CustomerId == entity.CustomerId);
-    //            if (entityToUpdate != null)
-    //            {
-    //            entityToUpdate.FirstName= entity.FirstName;
-    //            entityToUpdate.LastName= entity.LastName;
-
-    //            await _context.SaveChangesAsync();
-    //                return entityToUpdate;
-    //            }
-    //            return null!;
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            Debug.WriteLine("Error :: ProfileUpdate" + ex.Message);
-    //            return null!;
-    //        }
-    //    }
+    public override async Task<IEnumerable<ProfileEntity>> GetAllAsync()
+    {
+        try
+        {
+            var entities = await _context.Profiles.Include(c => c.Customer)
+                .ThenInclude(ct => ct.CustomerType)
+                .Include(pa => pa.ProfileAddresses).ThenInclude(a => a.Address)
+                .ToListAsync();
+            {
+                return entities;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("ERROR GetAllProfilesAsync::" + ex.Message);
+        }
+        return null!;
     }
+
+
+    public override async Task<ProfileEntity> GetOneAsync(Expression<Func<ProfileEntity, bool>> expression)
+    {
+       try
+        {
+            var entity = await _context.Set<ProfileEntity>().Include(c => c.Customer)
+                .ThenInclude(ct => ct.CustomerType)
+                .Include(pa => pa.ProfileAddresses).ThenInclude(a=>a.Address).
+                FirstOrDefaultAsync(expression);
+            if (entity != null)
+            {
+                return entity;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("ERROR GetOneProfileAsync::" + ex.Message);
+        }
+            return null!;
+          }
+    }
+
