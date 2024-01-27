@@ -12,5 +12,6 @@ public class ProfileAddressEntity
     public int AddressId { get; set; }
 
     public virtual AddressEntity Address { get; set; } = null!;
-     
+
+    public virtual ICollection<AddressEntity> Addresses { get; set; } = new List<AddressEntity>();
 }

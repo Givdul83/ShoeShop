@@ -68,7 +68,7 @@ public class CustomerService(CustomerRepository customerRepository, ProfileRepos
                 var list = new List<CustomerDto>();
                 foreach (var customer in customerEntities)
                     list.Add(new CustomerDto(customer.Id, customer.Email, customer.Created, customer.CustomerTypeId));
-
+                   
                 return list;
             }
             else { return null!; }

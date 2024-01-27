@@ -54,33 +54,33 @@ var customerService = builder.Services.GetRequiredService<BaseService>();
 
 //Console.ReadKey();
 Console.Clear();
-var searchedEmail = "Ambrax@gmail.com";
+//var searchedEmail = "Ambrax@gmail.com";
 
-var foundCustomer = await customerService.GetCustomerDto(searchedEmail);
-if (foundCustomer != null)
-{
-    Console.WriteLine("Customer found");
-    Console.WriteLine();
-    Console.Write($"First Name: {foundCustomer.FirstName}");
-    Console.WriteLine();
-    Console.Write($"Last Name: {foundCustomer.LastName}");
-    Console.WriteLine();
-    Console.Write($"Email: {foundCustomer.Email}");
-    Console.WriteLine();
-    Console.Write($"Street: {foundCustomer.StreetName}");
-    Console.WriteLine();
-    Console.Write($"PostalCode: {foundCustomer.PostalCode}");
-    Console.WriteLine();
-    Console.Write($"City: {foundCustomer.City}");
-    Console.WriteLine();
-    Console.Write($"Type of Customer: {foundCustomer.CustomerType}");
-    Console.WriteLine();
-    Console.ReadKey();
-}
-else
-{
-    Console.WriteLine("fucking failed");
-}
+//var foundCustomer = await customerService.GetCustomerDto(searchedEmail);
+//if (foundCustomer != null)
+//{
+//    Console.WriteLine("Customer found");
+//    Console.WriteLine();
+//    Console.Write($"First Name: {foundCustomer.FirstName}");
+//    Console.WriteLine();
+//    Console.Write($"Last Name: {foundCustomer.LastName}");
+//    Console.WriteLine();
+//    Console.Write($"Email: {foundCustomer.Email}");
+//    Console.WriteLine();
+//    Console.Write($"Street: {foundCustomer.StreetName}");
+//    Console.WriteLine();
+//    Console.Write($"PostalCode: {foundCustomer.PostalCode}");
+//    Console.WriteLine();
+//    Console.Write($"City: {foundCustomer.City}");
+//    Console.WriteLine();
+//    Console.Write($"Type of Customer: {foundCustomer.CustomerType}");
+//    Console.WriteLine();
+//    Console.ReadKey();
+//}
+//else
+//{
+//    Console.WriteLine("fucking failed");
+//}
 
 //var customerToUpdateEmail = "Ludde@gmail.com";
 

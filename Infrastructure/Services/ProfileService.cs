@@ -14,21 +14,22 @@ public class ProfileService(ProfileRepository profileRepository, CustomerReposit
     private readonly ProfileAddressRepository _profileAddressRepository = profileAddressRepository;
 
 
-    public async Task <ProfileDto> CreateNewPofile (UserRegDto userRegDto)
+    public async Task<ProfileDto> CreateNewPofile(UserRegDto userRegDto)
     {
         try
         {
             if (!await _customerRepository.ExistAsync(x => x.Email == userRegDto.Email))
             {
                 var profileEntity = await _profileRepository.CreateAsync(new
-                    ProfileEntity {
+                    ProfileEntity
+                {
                     FirstName = userRegDto.FirstName,
                     LastName = userRegDto.LastName,
                 });
-               
 
-                var profileDto =  new ProfileDto(profileEntity.FirstName, profileEntity.LastName, profileEntity.Id, profileEntity.CustomerId);
-               
+
+                var profileDto = new ProfileDto(profileEntity.FirstName, profileEntity.LastName, profileEntity.Id, profileEntity.CustomerId);
+
                 return profileDto;
             }
             return null!;
@@ -98,7 +99,7 @@ public class ProfileService(ProfileRepository profileRepository, CustomerReposit
 
                 var profileToUpdate = await _profileRepository.GetOneAsync(p => p.CustomerId == customerToupdate.Id);
 
-                if (profileToUpdate.FirstName == userRegDto.FirstName && profileToUpdate.LastName ==userRegDto.LastName)
+                if (profileToUpdate.FirstName == userRegDto.FirstName && profileToUpdate.LastName == userRegDto.LastName)
                 {
                     return true;
                 }
@@ -128,16 +129,17 @@ public class ProfileService(ProfileRepository profileRepository, CustomerReposit
 
 
     public async Task<bool> DeleteProfileAsync(Expression<Func<ProfileEntity, bool>> expression)
-{
-    try
     {
-        var result = await _profileRepository.DeleteAsync(expression);
-        return result;
-    }
-    catch (Exception ex)
-    {
-        Debug.WriteLine("ERROR :: DeleteProfileTypeAsync " + ex.Message);
-        return false!;
+        try
+        {
+            var result = await _profileRepository.DeleteAsync(expression);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("ERROR :: DeleteProfileTypeAsync " + ex.Message);
+            return false!;
 
+        }
     }
 }
