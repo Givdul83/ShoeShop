@@ -14,26 +14,32 @@ public class CustomerTypeService(CustomerTypeRepository customerTypeRepository,C
 
     
 
-    public async Task<bool> CreateCustomerType(string customerType)
+    public async Task<CustomerTypeEntity> CreateCustomerType(string customerType)
     {
         try
         {
-            if (!await _customerTypeRepository.ExistAsync(x => x.TypeOfCustomer == customerType))
+            var customerTypeEntity = await _customerTypeRepository.GetOneAsync(x => x.TypeOfCustomer == customerType);
+            if (customerTypeEntity == null)
             {
-                var customerTypeEntity = await _customerTypeRepository.
+                var newcustomerTypeEntity = await _customerTypeRepository.
                     CreateAsync(new CustomerTypeEntity { TypeOfCustomer = customerType });
-                if (customerTypeEntity != null)
+                if (newcustomerTypeEntity != null)
                 {
-                    return true;
+                    return newcustomerTypeEntity;
                 }
 
             }
-            return false;
+            else
+            {
+                return customerTypeEntity;
+            }
+
+            return null!;
         }
         catch (Exception ex)
         {
             Debug.WriteLine("Error:: CreateTypeOfCustomer " + ex.Message);
-            return false;
+            return null!;
         }
     }
 
@@ -102,7 +108,9 @@ public class CustomerTypeService(CustomerTypeRepository customerTypeRepository,C
                     }
 
                 }
-            } return false;
+            }
+            
+            return false;
         }
         catch (Exception ex)
         {

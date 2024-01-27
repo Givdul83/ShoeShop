@@ -12,24 +12,22 @@ public class CustomerService(CustomerRepository customerRepository, ProfileRepos
     private readonly ProfileRepository _profileRepository = profileRepository;
     private readonly CustomerTypeRepository _customerTypeRepository = customerTypeRepository;
 
-    public async Task<CustomerDto> CreateNewCustomer(UserRegDto userRegDto)
+    public async Task<CustomerEntity> CreateNewCustomer( string email , int customerTypeId)
     {
         try
         {
-            if (!await _customerRepository.ExistAsync(x => x.Email == userRegDto.Email))
+            var customerType = await _customerTypeRepository.GetOneAsync(x => x.Id == customerTypeId);
+            var customerEntity = await _customerRepository.GetOneAsync(x => x.Email == email);
+            if(customerEntity==null) 
             {
-                var customerEntity = await _customerRepository.CreateAsync( new
-                    CustomerEntity() { Email = userRegDto.Email } );
 
-                var customerDto = new CustomerDto(
-                    customerEntity.Id,
-                     customerEntity.Email,
-                     customerEntity.Created,
-                     customerEntity.CustomerTypeId
-                );
-                return customerDto;
+                var newCustomerEntity = await _customerRepository.CreateAsync(new
+                    CustomerEntity { Email = email , CustomerTypeId= customerType.Id });
+
+                return newCustomerEntity; 
+               
             }
-            return null!;
+            return customerEntity;
         }
 
         catch (Exception ex)
@@ -58,18 +56,16 @@ public class CustomerService(CustomerRepository customerRepository, ProfileRepos
             return null!;
         }
     }
-    public async Task<IEnumerable<CustomerDto>> GetAllCustomerAsync()
+    public async Task<IEnumerable<CustomerEntity>> GetAllCustomerAsync()
     {
         try
         {
             var customerEntities = await _customerRepository.GetAllAsync();
             if (customerEntities != null)
             {
-                var list = new List<CustomerDto>();
-                foreach (var customer in customerEntities)
-                    list.Add(new CustomerDto(customer.Id, customer.Email, customer.Created, customer.CustomerTypeId));
-                   
-                return list;
+
+
+                return customerEntities;
             }
             else { return null!; }
         }

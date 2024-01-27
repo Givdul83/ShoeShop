@@ -14,26 +14,30 @@ public class ProfileService(ProfileRepository profileRepository, CustomerReposit
     private readonly ProfileAddressRepository _profileAddressRepository = profileAddressRepository;
 
 
-    public async Task<ProfileDto> CreateNewPofile(UserRegDto userRegDto)
+    public async Task<ProfileEntity> CreateNewPofile(Guid customerId, string firstName, string lastName)
     {
         try
         {
-            if (!await _customerRepository.ExistAsync(x => x.Email == userRegDto.Email))
+            var customer = await _customerRepository.GetOneAsync(x => x.Id == customerId);
+            if (customer != null)
             {
-                var profileEntity = await _profileRepository.CreateAsync(new
-                    ProfileEntity
+                var profile = await _profileRepository.CreateAsync(new ProfileEntity
                 {
-                    FirstName = userRegDto.FirstName,
-                    LastName = userRegDto.LastName,
+                    CustomerId = customer.Id,
+                    FirstName = firstName,
+                    LastName = lastName
                 });
+            
+            if (profile != null)
+            {
+                return profile;
 
-
-                var profileDto = new ProfileDto(profileEntity.FirstName, profileEntity.LastName, profileEntity.Id, profileEntity.CustomerId);
-
-                return profileDto;
+                
             }
-            return null!;
+            
         }
+            return null!;
+            }
 
         catch (Exception ex)
         {
@@ -89,7 +93,7 @@ public class ProfileService(ProfileRepository profileRepository, CustomerReposit
             return null!;
         }
     }
-    public async Task<bool> UpdateProfileAsync(UserRegDto userRegDto)
+    public async Task<ProfileEntity> UpdateProfileAsync(UserRegDto userRegDto)
     {
         try
         {
@@ -101,7 +105,9 @@ public class ProfileService(ProfileRepository profileRepository, CustomerReposit
 
                 if (profileToUpdate.FirstName == userRegDto.FirstName && profileToUpdate.LastName == userRegDto.LastName)
                 {
-                    return true;
+                    var notUpdated= await _profileRepository.UpdateAsync(x => x.Id == profileToUpdate.Id, profileToUpdate);
+                    Console.WriteLine("No changes to Profile detected");
+                    return notUpdated;
                 }
                 else
                 {
@@ -111,18 +117,19 @@ public class ProfileService(ProfileRepository profileRepository, CustomerReposit
                         profileToUpdate.LastName = userRegDto.LastName;
 
 
-                        await _profileRepository.UpdateAsync(x => x.CustomerId == profileToUpdate.CustomerId, profileToUpdate);
-                        return true;
+                       var updated = await _profileRepository.UpdateAsync(x => x.Id == profileToUpdate.Id, profileToUpdate);
+                        Console.WriteLine("Profile Updated");
+                        return updated;
                     }
 
                 }
             }
-            return false;
+            return null!;
         }
         catch (Exception ex)
         {
             Debug.WriteLine("ERROR :: UpdateProfileAsync " + ex.Message);
-            return false!;
+            return null!;
 
         }
     }

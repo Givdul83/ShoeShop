@@ -15,7 +15,7 @@ public static class FullCustomerFactory
             var customerEntity = CustomerFactory.CreateCustomerEntity(newCustomerDto.Email);
             var profileEntity = ProfileFactory.CreateProfileEntity(newCustomerDto.FirstName, newCustomerDto.LastName);
             var addressEntity = AddressFactory.CreateAddressEntity(newCustomerDto.StreetName, newCustomerDto.PostalCode, newCustomerDto.City);
-            var customerTypeEntity = CustomerTypeFactory.CreateCustomerType(newCustomerDto.CustomerType);
+            var customerTypeEntity = CustomerTypeFactory.CreateCustomerType(newCustomerDto.TypeOfCustomer);
 
 
             UserRegDto createdCustomerDto = new UserRegDto
@@ -26,7 +26,7 @@ public static class FullCustomerFactory
                 StreetName = addressEntity.StreetName,
                 PostalCode = addressEntity.PostalCode,
                 City = addressEntity.City,
-                CustomerType = customerTypeEntity.TypeOfCustomer
+               TypeOfCustomer = customerTypeEntity.TypeOfCustomer
             };
             return createdCustomerDto;
         }

@@ -19,7 +19,7 @@ public class CustomerEntity
     [Column(TypeName ="datetime2")] 
     public DateTime Created {  get; set; } = DateTime.Now;
 
-    
+    [ForeignKey("CustumerType")]
     public int CustomerTypeId { get; set; }
 
     public virtual CustomerTypeEntity CustomerType { get; set; } = null!; 
@@ -27,18 +27,18 @@ public class CustomerEntity
     public virtual ProfileEntity Profile { get; set; } = null!;
 
     
-    public static implicit operator CustomerEntity(UserRegDto dto)
-    {
+    //public static implicit operator CustomerEntity(UserRegDto dto)
+    //{
         
     
-        var customerEntity = new CustomerEntity
-        {
-            Email = dto.Email,
-            Created = DateTime.Now,
-            Id = new Guid(),
-        };
+    //    var customerEntity = new CustomerEntity
+    //    {
+    //        Email = dto.Email,
+    //        Created = DateTime.Now,
+    //        Id = new Guid(),
+    //    };
 
        
-        return customerEntity;
-    }
+    //    return customerEntity;
+    //}
 }

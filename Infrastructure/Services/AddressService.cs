@@ -14,12 +14,13 @@ public class AddressService(AddressRepository addressRepository, CustomerReposit
     private readonly ProfileRepository _profileRepository = profileRepository;
     private readonly ProfileAddressRepository _profileAddressRepository = profileAddressRepository;
 
-    public async Task<AddressDto> CreateAddressAsync(UserRegDto userRegDto)
+    public async Task<AddressEntity> CreateAddressAsync(UserRegDto userRegDto)
     {
         try
         {
-            if (!await _addressRepository.ExistAsync(x => x.StreetName == userRegDto.StreetName && x.City == userRegDto.City
-            && x.PostalCode == userRegDto.PostalCode))
+            var addressEntity = await _addressRepository.GetOneAsync(x => x.StreetName == userRegDto.StreetName && x.City == userRegDto.City
+            && x.PostalCode == userRegDto.PostalCode);
+            if (addressEntity == null)
             {
                 var newAddressEntity = await _addressRepository.CreateAsync(new AddressEntity
                 {
@@ -29,18 +30,20 @@ public class AddressService(AddressRepository addressRepository, CustomerReposit
                 });
                 if (newAddressEntity != null)
                 {
-                    var createdAddress = await _addressRepository.GetOneAsync(x => x.Id == newAddressEntity.Id);
-                    if (createdAddress != null)
-                    {
-                        var neawAddressDto = new AddressDto(createdAddress.StreetName, createdAddress.PostalCode,
-                            createdAddress.City, createdAddress.Id);
 
-                        return neawAddressDto;
-                    }
+                    return newAddressEntity;
                 }
             }
+
+            else
+                if (addressEntity != null)
+            {
+                return addressEntity;
+            }
+
             return null!;
         }
+
 
         catch (Exception ex)
         {
@@ -49,7 +52,7 @@ public class AddressService(AddressRepository addressRepository, CustomerReposit
         }
     }
 
-    public async Task<AddressDto> UpdateAddressAsync(UserRegDto userRegDto)
+    public async Task<AddressEntity> UpdateAddressAsync(UserRegDto userRegDto)
     {
         try
         {
@@ -58,28 +61,29 @@ public class AddressService(AddressRepository addressRepository, CustomerReposit
 
             if (addressToUpdate == null)
             {
-                return await CreateAddressAsync(userRegDto);
-               
+                var newAddress =  await CreateAddressAsync(userRegDto);
+
+                Console.WriteLine("Address Updated");
+                return newAddress;
+
+
             }
             else
             {
-                addressToUpdate.StreetName = userRegDto.StreetName;
-                addressToUpdate.City = userRegDto.City;
-                addressToUpdate.PostalCode = userRegDto.PostalCode;
+                
 
                 var updatedAddress = await _addressRepository.UpdateAsync(x => x.Id == addressToUpdate.Id, addressToUpdate);
-                return new AddressDto(updatedAddress.StreetName, updatedAddress.PostalCode,
-                                      updatedAddress.City, updatedAddress.Id);
-
                
+                Console.WriteLine("No changes to Address Detected");
+                return updatedAddress;
             }
-            
+
         }
-       
+
         catch (Exception ex)
         {
-            Debug.WriteLine("Error UpdateAddressAsync " +ex.Message);
-            return null !;
+            Debug.WriteLine("Error UpdateAddressAsync " + ex.Message);
+            return null!;
         }
     }
 
@@ -106,7 +110,7 @@ public class AddressService(AddressRepository addressRepository, CustomerReposit
         }
     }
 
-    public async Task<AddressDto> GetAddressByEmailAsync(string email)
+    public async Task<AddressEntity> GetAddressByEmailAsync(string email)
     {
         try
         {
@@ -123,8 +127,7 @@ public class AddressService(AddressRepository addressRepository, CustomerReposit
                         var addressEntity = await _addressRepository.GetOneAsync(a => a.Id == profileAddressEntity.AddressId);
                         if (addressEntity != null)
                         {
-                            var addressDto = new AddressDto(addressEntity.StreetName,addressEntity.PostalCode, addressEntity.City, addressEntity.Id);
-                            return addressDto;
+                            return addressEntity;
                         }
                     }
 

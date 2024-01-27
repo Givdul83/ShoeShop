@@ -8,11 +8,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Infrastructure.Services;
 
 public class BaseService(AddressRepository addressRepository, ProfileRepository profileRepository, CustomerRepository customerRepository, CustomerTypeRepository customerTypeRepository,
-    ProfileAddressRepository profileAddressRepository, AddressService addressService, CustomerTypeService customerTypeService, CustomerService customerService, ProfileService profileService)
+    ProfileAddressRepository profileAddressRepository, AddressService addressService, CustomerTypeService customerTypeService, CustomerService customerService, ProfileService profileService, ProfileAddressService profileAddressService)
 {
 
     private readonly AddressRepository _addressRepository = addressRepository;
@@ -24,7 +25,7 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
     private readonly CustomerTypeService _customerTypeService = customerTypeService;
     private readonly CustomerService _customerService = customerService;
     private readonly ProfileService _profileService = profileService;
-    
+    private readonly ProfileAddressService _profileAddressService = profileAddressService;
 
 
 
@@ -36,11 +37,22 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
     {
         try
         {
-            var newcustomerTypeEntity = await _customerTypeRepository.CreateAsync(dtoReg);
-            await _customerRepository.CreateAsync(dtoReg);
-            await _profileRepository.CreateAsync(dtoReg);
-            await _addressRepository.CreateAsync(dtoReg);
+            var address = await _addressService.CreateAddressAsync(dtoReg);
+            var customerType = await _customerTypeService.CreateCustomerType(dtoReg.TypeOfCustomer);
+            if (customerType != null && address != null)
+            {
 
+                var customer = await _customerService.CreateNewCustomer(dtoReg.Email, customerType.Id);
+                if (customer != null)
+                {
+                    var profile = await _profileService.CreateNewPofile(customer.Id, dtoReg.FirstName, dtoReg.LastName);
+                    if (profile != null)
+                    {
+                        var profileAddress = await _profileAddressService.CreateProfileAddressAsync(profile.Id, address.Id);
+                    }
+                }
+
+            }
             return true;
         }
 
@@ -51,29 +63,29 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
         }
     }
 
-    public async Task<UserDto> GetUserDtoAsync(string email)
-    {
-        try
-        {
-            var foundCustomer = await _customerRepository.GetOneAsync(x => x.Email == email);
-            var foundCustomerType = await _customerTypeRepository.GetOneAsync(x => x.Id == foundCustomer.CustomerTypeId);
-            var foundProfile = await _profileRepository.GetOneAsync(x => x.CustomerId == foundCustomer.Id);
-            var foundProfileAddress = await _profileAddressRepository.GetOneAsync(x => x.ProfileId == foundProfile.Id);
-            var foundAddress = await _addressRepository.GetOneAsync(x => x.Id == foundProfileAddress.AddressId);
-            var foundDto = UserDto.FromEntities(foundCustomer, foundProfile, foundAddress, foundCustomerType);
+    //public async Task<UserDto> GetUserDtoAsync(string email)
+    //{
+    //    try
+    //    {
+    //        var foundCustomer = await _customerRepository.GetOneAsync(x => x.Email == email);
+    //        var foundCustomerType = await _customerTypeRepository.GetOneAsync(x => x.Id == foundCustomer.CustomerTypeId);
+    //        var foundProfile = await _profileRepository.GetOneAsync(x => x.CustomerId == foundCustomer.Id);
+    //        var foundProfileAddress = await _profileAddressRepository.GetOneAsync(x => x.ProfileId == foundProfile.Id);
+    //        var foundAddress = await _addressRepository.GetOneAsync(x => x.Id == foundProfileAddress.AddressId);
+    //        var foundDto = UserDto.FromEntities(foundCustomer, foundProfile, foundAddress, foundCustomerType);
 
-            return foundDto;
-        }
+    //        return foundDto;
+    //    }
 
-        catch (Exception ex)
-        {
-            Debug.WriteLine("Error GetUserDtoAsync:: " + ex.Message);
-            return null!;
-        }
-        {
+    //    catch (Exception ex)
+    //    {
+    //        Debug.WriteLine("Error GetUserDtoAsync:: " + ex.Message);
+    //        return null!;
+    //    }
+    //    {
 
-        }
-    }
+    //    }
+    //}
 
 
     public async Task<bool> ControlUserExistAsync(string email)
@@ -83,6 +95,7 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
             if (await _customerRepository.ExistAsync(x => x.Email == email))
             {
                 Console.WriteLine($"User with {email} is already created", "ControlUSerExist");
+
                 return true;
             }
 
@@ -114,7 +127,8 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
                 if (profileToDelete != null)
                 {
 
-
+                    await _customerRepository.DeleteAsync(x => x.Email == customerToDelete.Email);
+                    await _profileRepository.DeleteAsync(x => x.Id == profileToDelete.Id);
 
                     Console.WriteLine("UserDeleted");
                     return true;
@@ -170,35 +184,42 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
 
             var userDtos = new List<UserDto>();
 
-            var customers = await _customerRepository.GetAllAsync();
+            var customers = await _customerService.GetAllCustomerAsync();
+           
             if (customers != null)
             {
+
                 foreach (var customer in customers)
                 {
-                    var profile = await _profileRepository.GetOneAsync(x => x.CustomerId == customer.Id);
+
                     var customerType = await _customerTypeRepository.GetOneAsync(ct => ct.Id == customer.CustomerTypeId);
+                    var profile = await _profileRepository.GetOneAsync(x => x.CustomerId == customer.Id);
                     var profileAddress = await _profileAddressRepository.GetOneAsync(pa => pa.ProfileId == profile.Id);
-                    var address = await _addressRepository.GetOneAsync(a => a.Id == profileAddress.AddressId);
+                     var address = await _addressRepository.GetOneAsync(a => a.Id == profileAddress.AddressId);
 
 
-                    var dto = new UserDto
-                    {
-                        Email = customer.Email,
-                        FirstName = profile.FirstName,
-                        LastName = profile.LastName,
-                        StreetName = address.StreetName,
-                        PostalCode = address.PostalCode,
-                        City = address.City,
-                        TypeOfCustomer = customerType.TypeOfCustomer,
-                        Created = customer.Created,
-                    };
+                        var dto = new UserDto
+                        {
+                            Email = customer.Email,
+                            FirstName = profile.FirstName,
+                            LastName = profile.LastName,
+                            StreetName = address.StreetName,
+                            PostalCode = address.PostalCode,
+                            City = address.City,
+                            TypeOfCustomer = customerType.TypeOfCustomer,
+                            Created = customer.Created,
+                        };
 
-                    userDtos.Add(dto);
-                }
+                        userDtos.Add(dto);
+                    }
                 return userDtos;
             }
+               
+
+            
             return null!;
         }
+        
         catch (Exception ex)
         {
             Debug.WriteLine("Error ::GetAllUsersAsync " + ex.Message);
@@ -207,7 +228,7 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
 
 
     }
-        public async Task<bool> UpdateUser(UserRegDto userRegDto)
+    public async Task<bool> UpdateUser(UserRegDto userRegDto)
     {
         try
         {
@@ -215,6 +236,7 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
             var addressToUpdate = await _addressService.UpdateAddressAsync(userRegDto);
             var profileToUpdate = await _profileService.UpdateProfileAsync(userRegDto);
             var customerTypeToUpdate = await _customerTypeService.UpdateCustomerTypeAsync(userRegDto);
+            var profileAddressToUpdate = await _profileAddressService.UpdateProfileAddressAsync(profileToUpdate.Id, addressToUpdate.Id);
             await _customerService.UpdateCustomerEmailAsync(customerToUpdate, userRegDto);
             return true;
         }
@@ -236,7 +258,6 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
 
 
 
-       
 
 
 
@@ -245,8 +266,10 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
 
 
 
-    
-        
-    
+
+
+
+
+
 
 

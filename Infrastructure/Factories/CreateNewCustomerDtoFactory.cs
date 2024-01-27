@@ -18,7 +18,7 @@ public static class CreateNewCustomerDtoFactory
                 StreetName = streetName,
                 PostalCode = postalCode,
                 City = city,
-                CustomerType = customerType
+                TypeOfCustomer = customerType
 
             };
             return customerDto;

@@ -12,14 +12,82 @@ namespace Infrastructure.Repositories
     {
         private readonly CustomerDbContext _context = context;
 
-        public async Task DeleteAsync(ProfileAddressEntity entity)
+        public  async Task<bool> DeleteProfileAddressAsync(ProfileAddressEntity profileAddressEntity)
         {
-            _context.ProfileAddresses.Remove(entity);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Remove(profileAddressEntity);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ERROR  GetAllProfileAddressAsync::" + ex.Message);
+            }
+            return false;
+        }
+    
 
+        public async Task<IEnumerable<ProfileAddressEntity>> GetAllProfileAddressByIdAsync(Expression<Func<ProfileAddressEntity, bool>> expression)
+
+        {
+           try
+            {
+                return await _context.Set<ProfileAddressEntity>().Where(expression).ToListAsync();
+                   
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ERROR  GetAllProfileAddressAsync::" + ex.Message);
+            }
+            return null!;
         }
     }
-}
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //    public async override Task<bool> DeleteAsync(ProfileAddressEntity entity)
+        //    {
+        //        try
+        //        {
+        //            if (entity != null)
+        //            {
+        //                _context.ProfileAddresses.Remove(entity);
+        //                await _context.SaveChangesAsync();
+        //                return true;
+        //            }
+        //            return false;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Debug.WriteLine("Error :: DeleteProfileAddressEntityAsync " + ex.Message);
+        //            return false;
+        //        }
+        //    }
+
+        //    public override Task<IEnumerable<ProfileAddressEntity>> GetAllAsync()
+        //    {
+        //        return base.GetAllAsync();
+        //    }
+        //}
+
+
+
+
+
+    
 //        public async Task<bool> DeleteProfileAdressEntityAsync(ProfileAddressEntity entity)
 //        {
 //            try
@@ -30,7 +98,7 @@ namespace Infrastructure.Repositories
 //                    _context.ProfileAddresses.Remove(entityToDelete);
 //                    await _context.SaveChangesAsync();
 //                    return true;
-                      
+
 //                }
 //                return false;
 //            }
@@ -39,13 +107,13 @@ namespace Infrastructure.Repositories
 //                Debug.WriteLine("Error :: DeleteProfileAddressEntityAsync " + ex.Message);
 //                return false;
 //            }
-            
+
 //        }
 
 //        public async Task<ProfileAddressEntity> UpdateProfileAddressAsync( ProfileAddressEntity entity)
 //        {
 
-           
+
 //            try
 //            {
 //                var entityToUpdate = await _context.Set<ProfileAddressEntity>().FirstOrDefaultAsync(x => x.ProfileId == entity.ProfileId);
@@ -72,4 +140,4 @@ namespace Infrastructure.Repositories
 //        }
 //    }
 //}
-      
+
