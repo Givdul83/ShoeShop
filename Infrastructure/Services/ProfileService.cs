@@ -105,7 +105,7 @@ public class ProfileService(ProfileRepository profileRepository, CustomerReposit
 
                 if (profileToUpdate.FirstName == userRegDto.FirstName && profileToUpdate.LastName == userRegDto.LastName)
                 {
-                    var notUpdated= await _profileRepository.UpdateAsync(x => x.Id == profileToUpdate.Id, profileToUpdate);
+                    var notUpdated= await _profileRepository.UpdateAsync(p => p.CustomerId == customerToupdate.Id, profileToUpdate);
                     Console.WriteLine("No changes to Profile detected");
                     return notUpdated;
                 }
@@ -117,7 +117,7 @@ public class ProfileService(ProfileRepository profileRepository, CustomerReposit
                         profileToUpdate.LastName = userRegDto.LastName;
 
 
-                       var updated = await _profileRepository.UpdateAsync(x => x.Id == profileToUpdate.Id, profileToUpdate);
+                       var updated = await _profileRepository.UpdateAsync(p => p.CustomerId == customerToupdate.Id, profileToUpdate);
                         Console.WriteLine("Profile Updated");
                         return updated;
                     }

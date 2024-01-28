@@ -12,7 +12,7 @@ namespace Infrastructure.Repositories
     {
         private readonly CustomerDbContext _context = context;
 
-        public  async Task<bool> DeleteProfileAddressAsync(ProfileAddressEntity profileAddressEntity)
+        public async Task<bool> DeleteProfileAddressAsync(ProfileAddressEntity profileAddressEntity)
         {
             try
             {
@@ -22,11 +22,11 @@ namespace Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("ERROR  GetAllProfileAddressAsync::" + ex.Message);
+                Debug.WriteLine("ERROR   DeleteProfileAddressAsync::" + ex.Message);
             }
             return false;
         }
-    
+
 
         public async Task<IEnumerable<ProfileAddressEntity>> GetAllProfileAddressByIdAsync(Expression<Func<ProfileAddressEntity, bool>> expression)
 

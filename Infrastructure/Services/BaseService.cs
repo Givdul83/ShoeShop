@@ -168,11 +168,13 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
                     return foundUserDto;
                 }
             }
+            Console.WriteLine("User to update not found");
             return null!;
         }
         catch (Exception ex)
         {
             Debug.WriteLine("Error:: FindUser" + ex.Message);
+            Console.WriteLine("User Not Found");
             return null!;
         }
     }
@@ -198,7 +200,8 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
                      var address = await _addressRepository.GetOneAsync(a => a.Id == profileAddress.AddressId);
 
 
-                        var dto = new UserDto
+     
+                var dto = new UserDto
                         {
                             Email = customer.Email,
                             FirstName = profile.FirstName,
@@ -236,9 +239,14 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
             var addressToUpdate = await _addressService.UpdateAddressAsync(userRegDto);
             var profileToUpdate = await _profileService.UpdateProfileAsync(userRegDto);
             var customerTypeToUpdate = await _customerTypeService.UpdateCustomerTypeAsync(userRegDto);
-            var profileAddressToUpdate = await _profileAddressService.UpdateProfileAddressAsync(profileToUpdate.Id, addressToUpdate.Id);
-            await _customerService.UpdateCustomerEmailAsync(customerToUpdate, userRegDto);
-            return true;
+            var profileAddressToUpdate = await _profileAddressService.CreateProfileAddressAsync(profileToUpdate.Id, addressToUpdate.Id);
+            if (profileAddressToUpdate != null)
+            {
+                await _profileAddressService.DeleteDuplicateProfileAddressesAsync(profileAddressToUpdate.ProfileId, profileAddressToUpdate.AddressId);
+                await _customerService.UpdateCustomerEmailAsync(customerToUpdate, userRegDto);
+                return true;
+            }
+            return false;
         }
 
 

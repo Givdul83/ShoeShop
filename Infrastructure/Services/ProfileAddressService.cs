@@ -21,7 +21,7 @@ namespace Infrastructure.Services
                 var profileAddress = await _profileAddressRepository.GetOneAsync(x => x.ProfileId == profileId && x.AddressId == addresId);
                 if (profileAddress != null)
                 {
-                    return profileAddress;
+                    return await _profileAddressRepository.UpdateAsync(x => x.ProfileId == profileId, profileAddress);
                 }
 
 
@@ -46,29 +46,29 @@ namespace Infrastructure.Services
         {
             try
             {
-
-                var profileAddresses = await _profileAddressRepository.GetAllProfileAddressByIdAsync(x => x.ProfileId == profileId);
-
-
-                foreach (var profileAddress in profileAddresses)
+                var profileAddressToUpdate = await _profileAddressRepository.GetOneAsync(x => x.ProfileId == profileId);
+                if (profileAddressToUpdate != null)
                 {
-                    if (profileAddress.AddressId == addressId)
-                    {
 
-                        var isUpdated = await _profileAddressRepository.CreateAsync(profileAddress);
-                        return isUpdated;
+                    if (profileAddressToUpdate.AddressId == addressId)
+                    {
+                        return profileAddressToUpdate;
                     }
                     else
                     {
+                        if (profileAddressToUpdate.AddressId != addressId)
+                        {
+                            profileAddressToUpdate.AddressId = addressId;
+                            await _profileAddressRepository.UpdateAsync(x => x.ProfileId == profileAddressToUpdate.ProfileId, profileAddressToUpdate);
+                            return profileAddressToUpdate;
+                        }
 
-                        await _profileAddressRepository.DeleteProfileAddressAsync(profileAddress);
                     }
                 }
-
                 return null!;
-               
-            }
 
+
+            }
             catch (Exception ex)
             {
                 Debug.WriteLine(" ERROR UpdateProfileAddressAsync " + ex.Message);
@@ -76,5 +76,34 @@ namespace Infrastructure.Services
             }
         }
 
+        public async Task<bool> DeleteDuplicateProfileAddressesAsync(int profileId, int addressId)
+        {
+            try
+            {
+                var entities = await _profileAddressRepository.GetAllProfileAddressByIdAsync(x => x.ProfileId == profileId);
+
+                if (entities != null && entities.Any())
+                {
+                    bool deletedAny = false;
+
+                    foreach (var entity in entities)
+                    {
+                        if (entity.AddressId != addressId)
+                        {
+                            await _profileAddressRepository.DeleteProfileAddressAsync(entity);
+                            deletedAny = true;
+                        }
+                    }
+                    return deletedAny;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+
+                Debug.WriteLine(" ERROR DeleteDuplicateProfileAddressesAsync " + ex.Message);
+                return false;
+            }
+        }
     }
 }
