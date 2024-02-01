@@ -12,7 +12,7 @@ public class UserRegDto
     public string StreetName { get; set; } = null!;
     public string City { get; set; } = null!;
 
-    public string PostalCode = null!;
+    public string PostalCode { get; set; } = null!;
 
     public string TypeOfCustomer { get; set; } = null!;
 

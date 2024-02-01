@@ -1,0 +1,85 @@
+﻿<Window x:Class="UserMobileApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UserMobileApp"
+        xmlns:viewmodels="clr-namespace:UserMobileApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="300">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+        <Grid Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0">
+                <TextBlock Text="Welcome To The ShoeShop" Margin="20" HorizontalAlignment="Center"
+                   FontSize="12" FontWeight="Bold"/>
+                <TextBlock Text="Please select User from the list below or press the button below to start registration  "
+                   HorizontalAlignment="Center" FontWeight="Bold" TextWrapping="Wrap"  TextAlignment="Center"/>
+            </StackPanel>
+            <Button  Content="Press to Start Registration" x:Name="BtnStartReg" Margin="10 " Grid.Row="1" Click="BtnStartReg_Click_1">
+            </Button>
+            <StackPanel Grid.Row="2" Visibility="Collapsed" x:Name="RegistrationForm">
+                <TextBlock  Text="Enter First Name" Margin="2"/>
+                <TextBox x:Name="Input_FirstName" Text="{Binding UserRegForm.FirstName, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock  Text="Enter Last Name" Margin="2"/>
+                <TextBox x:Name="Input_LastName" Text="{Binding UserRegForm.LastName, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock  Text="Enter Email" Margin="2"/>
+                <TextBox x:Name="Input_Email" Text="{Binding UserRegForm.Email, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock  Text="Enter Streetname and Number" Margin="2"/>
+                <TextBox x:Name="Input_StreetName" Text="{Binding UserRegForm.StreetName, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock  Text="Enter Postal Code" Margin="2"/>
+                <TextBox x:Name="Input_PostalCode" Text="{Binding UserRegForm.PostalCode, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Enter City" Margin="2"/>
+                <TextBox x:Name="Input_City" Text="{Binding UserRegForm.City, UpdateSourceTrigger=PropertyChanged}" />
+                <StackPanel HorizontalAlignment="Center" Orientation="Vertical" Margin="2">
+                    <RadioButton x:Name="Btn_Private" Content="Private Customer" GroupName="TypeOfCustomerBtn" IsChecked="{Binding IsPrivateCustomerChecked, Mode=TwoWay}"/>
+                    <RadioButton x:Name="Btn_Company" Content="Business Customer" GroupName="TypeOfCustomerBtn" IsChecked="{Binding IsCompanyCustomerChecked, Mode=TwoWay}"/>
+                </StackPanel>
+                <Button Content="Register" x:Name="BtnSubmit" Command="{Binding AddUserToDataBaseCommand}"/>
+            </StackPanel>
+
+            <ListView  Grid.Row="3" ItemsSource="{Binding Users}" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} {1}">
+                                        <Binding Path="FirstName" />
+                                        <Binding Path="LastName" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <TextBlock Text="{Binding Email}" />
+                            <TextBlock Text="{Binding TypeOfCustomer}"/>
+                            <StackPanel>
+                                <Grid >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0"  Content="Select User" x:Name="BtnSelect" Click="BtnSelect_Click"  Background="Aqua" Margin="5"/>
+                                        <Button Grid.Column="1"   Content="Show User" x:Name="BtnShow" Click="BtnShow_Click" Background="GreenYellow" Margin="5"/>
+                                    <Button Grid.Column="2" Content="Delete User" x:Name="BtnDelete" Command="{Binding DataContext.DeleteUserFromDatabaseCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                                            CommandParameter="{Binding}" Background="Crimson" Margin="5"/>
+                                    </Grid>
+                                </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+
+                </ListView.ItemTemplate>
+
+            </ListView>
+
+        </Grid>
+    </ScrollViewer>
+</Window>
+
