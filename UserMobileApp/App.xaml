@@ -2,8 +2,22 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:UserMobileApp"
+             xmlns:viewmodel="clr-namespace:UserMobileApp.ViewModels"
+             xmlns:views="clr-namespace:UserMobileApp.Views"
              >
 <Application.Resources>
-         
+        <DataTemplate DataType="{x:Type viewmodel:StartViewModel}">
+            <views:StartView/>
+
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodel:UserViewModel}">
+            <views:UserView/>
+
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewmodel:ProductViewModel}">
+             <views:ProductView/>
+        </DataTemplate>
+    
     </Application.Resources>
 </Application>

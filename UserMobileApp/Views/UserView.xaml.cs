@@ -21,10 +21,15 @@ namespace UserMobileApp.Views
     /// </summary>
     public partial class UserView : UserControl
     {
-        public UserView(UserViewModel viewModel)
+        public UserView()
         {
             InitializeComponent();
+            
+        }
+        public UserView(UserViewModel viewModel) :this() 
+        {
             DataContext = viewModel;
         }
+
     }
 }

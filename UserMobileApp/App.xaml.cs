@@ -42,6 +42,8 @@ namespace UserMobileApp
                     services.AddTransient<UserView>();
                     services.AddTransient<ProductViewModel>();
                     services.AddTransient<ProductView>();
+                    services.AddTransient<StartViewModel>();
+                    services.AddTransient<StartView>();
 
                 }).Build();
 

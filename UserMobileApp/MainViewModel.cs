@@ -22,101 +22,100 @@ namespace UserMobileApp;
 
     
 
-    [ObservableProperty]
-    private UserRegDto _userRegForm = new();
+    //[ObservableProperty]
+    //private UserRegDto _userRegForm = new();
 
 
-    [ObservableProperty]
-    private ObservableCollection<UserDto> _users = [];
+    //[ObservableProperty]
+    //private ObservableCollection<UserDto> _users = [];
 
-    private bool _isPrivateCustomerChecked = true;
+    //private bool _isPrivateCustomerChecked = true;
 
     public MainViewModel(IServiceProvider serviceProvider, BaseService baseService)
     {
         _serviceProvider = serviceProvider;
-        CurrentViewModel = this; 
+        CurrentViewModel = _serviceProvider.GetRequiredService<StartViewModel>(); ; 
         _baseService = baseService;
-        GetUsersFromDataBase();
-       
+         
     }
 
-    private async Task GetUsersFromDataBase()
-    {
-        var usersFound= await _baseService.GetAllUsersAsync();
-        foreach (var user in usersFound)
-        {
-            Users.Add(user);
-        }
-    }
+//    private async Task GetUsersFromDataBase()
+//    {
+//        var usersFound= await _baseService.GetAllUsersAsync();
+//        foreach (var user in usersFound)
+//        {
+//            Users.Add(user);
+//        }
+//    }
 
-    [RelayCommand]
-    public async Task AddUserToDataBase()
-    {
-        if (_isPrivateCustomerChecked == true)
-        {
-            UserRegForm.TypeOfCustomer = "Private";
-        }
-        else
-        {
-            UserRegForm.TypeOfCustomer = "Company";
-        }
+//    [RelayCommand]
+//    public async Task AddUserToDataBase()
+//    {
+//        if (_isPrivateCustomerChecked == true)
+//        {
+//            UserRegForm.TypeOfCustomer = "Private";
+//        }
+//        else
+//        {
+//            UserRegForm.TypeOfCustomer = "Company";
+//        }
 
-        if (!string.IsNullOrWhiteSpace(UserRegForm.FirstName) && !string.IsNullOrWhiteSpace(UserRegForm.LastName)
-            && !string.IsNullOrWhiteSpace(UserRegForm.Email) && !string.IsNullOrWhiteSpace(UserRegForm.StreetName)
-            && !string.IsNullOrWhiteSpace(UserRegForm.PostalCode) && !string.IsNullOrWhiteSpace(UserRegForm.City))
-        {
-            await _baseService.CreateUserAsync(UserRegForm);
-            var newUserDto = await _baseService.FindUserAsync(UserRegForm.Email);
-            if (newUserDto != null) 
-            {
-                Users.Add(newUserDto);
-            }
-        }
-    }
+//        if (!string.IsNullOrWhiteSpace(UserRegForm.FirstName) && !string.IsNullOrWhiteSpace(UserRegForm.LastName)
+//            && !string.IsNullOrWhiteSpace(UserRegForm.Email) && !string.IsNullOrWhiteSpace(UserRegForm.StreetName)
+//            && !string.IsNullOrWhiteSpace(UserRegForm.PostalCode) && !string.IsNullOrWhiteSpace(UserRegForm.City))
+//        {
+//            await _baseService.CreateUserAsync(UserRegForm);
+//            var newUserDto = await _baseService.FindUserAsync(UserRegForm.Email);
+//            if (newUserDto != null) 
+//            {
+//                Users.Add(newUserDto);
+//            }
+//        }
+//    }
 
-    public bool IsPrivateCustomerChecked
-    {
-        get => _isPrivateCustomerChecked;
-        set
-        {
-            SetProperty(ref _isPrivateCustomerChecked, value);
-            if (value) UserRegForm.TypeOfCustomer = "Private";
-        }
-    }
+//    public bool IsPrivateCustomerChecked
+//    {
+//        get => _isPrivateCustomerChecked;
+//        set
+//        {
+//            SetProperty(ref _isPrivateCustomerChecked, value);
+//            if (value) UserRegForm.TypeOfCustomer = "Private";
+//        }
+//    }
 
-    private bool _isCompanyCustomerChecked;
-    public bool IsCompanyCustomerChecked
-    {
-        get => _isCompanyCustomerChecked;
-        set
-        {
-            SetProperty(ref _isCompanyCustomerChecked, value);
-            if (value) UserRegForm.TypeOfCustomer = "Company";
-        }
-}
+//    private bool _isCompanyCustomerChecked;
+//    public bool IsCompanyCustomerChecked
+//    {
+//        get => _isCompanyCustomerChecked;
+//        set
+//        {
+//            SetProperty(ref _isCompanyCustomerChecked, value);
+//            if (value) UserRegForm.TypeOfCustomer = "Company";
+//        }
+//}
 
-    [RelayCommand]
-    public async Task DeleteUserFromDatabase(UserDto user)
-    {
-        if (user != null)
-        {
+//    [RelayCommand]
+//    public async Task DeleteUserFromDatabase(UserDto user)
+//    {
+//        if (user != null)
+//        {
 
-            await _baseService.DeleteUserAsync(user.Email);
-            Users.Remove(user);
-        }
-    }
+//            await _baseService.DeleteUserAsync(user.Email);
+//            Users.Remove(user);
+//        }
+//    }
 
 
-    [RelayCommand]
+//    [RelayCommand]
 
-    public void NavigateToUserView(UserDto user)
-    {
-        if (user != null)
-        {
-            var userViewModel = ActivatorUtilities.CreateInstance<UserViewModel>(_serviceProvider, user);
-            CurrentViewModel = userViewModel;
-        }
-    }
+//    public void NavigateToUserView(UserDto user)
+//    {
+//        if (user != null)
+//        {
+//            var userViewModel = ActivatorUtilities.CreateInstance<UserViewModel>(_serviceProvider, user);
+//            CurrentViewModel = userViewModel;
+//        }
+//    }
 }
 
 

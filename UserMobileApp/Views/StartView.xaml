@@ -1,22 +1,15 @@
-﻿<Window x:Class="UserMobileApp.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:UserMobileApp"
-        xmlns:viewmodels="clr-namespace:UserMobileApp.ViewModels"
-        xmlns:views ="clr-namespace:UserMobileApp.Views"
-        
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="300">
+﻿<UserControl x:Class="UserMobileApp.Views.StartView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UserMobileApp.Views"
+             xmlns:viewmodels ="clr-namespace:UserMobileApp.ViewModels"
+             xmlns:views ="clr-namespace:UserMobileApp.Views" d:DataContext="{d:DesignInstance Type=viewmodels:StartViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="300">
 
-
-    <ContentControl Content="{Binding CurrentViewModel}"/>
-    
-
-
-
-    <!--<ScrollViewer VerticalScrollBarVisibility="Auto" >
+    <ScrollViewer VerticalScrollBarVisibility="Auto" >
         <Grid Margin="30">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -76,14 +69,14 @@
                                     </Grid.ColumnDefinitions>
                                     <Button Grid.Column="0"  Content="Select User" x:Name="BtnSelect" Click="BtnSelect_Click"  Background="Aqua" Margin="5"/>
                                     <Button Grid.Column="1"   Content="Show User" x:Name="BtnShow" 
-                                            Command="{Binding DataContext.NavigateToUserViewCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                            
                                             Background="GreenYellow" Margin="5"
                                              CommandParameter="{Binding}" />
                                     <Button Grid.Column="2" Content="Delete User" x:Name="BtnDelete" 
-                                            Command="{Binding DataContext.DeleteUserFromDatabaseCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                                            Command="{Binding DeleteUserFromDataBaseCommand}" 
                                             CommandParameter="{Binding}" Background="Crimson" Margin="5"/>
-                                    </Grid>
-                                </StackPanel>
+                                </Grid>
+                            </StackPanel>
                         </StackPanel>
                     </DataTemplate>
 
@@ -92,6 +85,5 @@
             </ListView>
 
         </Grid>
-    </ScrollViewer>-->
-</Window>
-
+    </ScrollViewer>
+</UserControl>
