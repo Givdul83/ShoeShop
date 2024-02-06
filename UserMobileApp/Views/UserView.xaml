@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="UserMobileApp.Views.UserView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UserMobileApp.Views"
+             xmlns:viewmodels ="clr-namespace:UserMobileApp.ViewModels"
+             xmlns:view ="clr-namespace:UserMobileApp.Views"
+             d:DataContext="{d:DesignInstance Type=viewmodels:UserViewModel}"
+             
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="300">
+    <Grid>
+        <StackPanel>
+            <Label Content="UserView"/>
+            <Button Content="Back to start" Command="{Binding NavigateToMainViewCommand}"/>
+        </StackPanel>
+        
+        
+        
+    </Grid>
+</UserControl>

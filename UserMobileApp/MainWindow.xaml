@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UserMobileApp"
         xmlns:viewmodels="clr-namespace:UserMobileApp"
+        
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="300">
-
+    
     <ScrollViewer VerticalScrollBarVisibility="Auto" >
         <Grid Margin="30">
             <Grid.RowDefinitions>
@@ -67,8 +68,12 @@
                                         <ColumnDefinition Width="auto"/>
                                     </Grid.ColumnDefinitions>
                                     <Button Grid.Column="0"  Content="Select User" x:Name="BtnSelect" Click="BtnSelect_Click"  Background="Aqua" Margin="5"/>
-                                        <Button Grid.Column="1"   Content="Show User" x:Name="BtnShow" Click="BtnShow_Click" Background="GreenYellow" Margin="5"/>
-                                    <Button Grid.Column="2" Content="Delete User" x:Name="BtnDelete" Command="{Binding DataContext.DeleteUserFromDatabaseCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                                    <Button Grid.Column="1"   Content="Show User" x:Name="BtnShow" 
+                                            Command="{Binding DataContext.NavigateToUserViewCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                            Background="GreenYellow" Margin="5"
+                                             CommandParameter="{Binding}" />
+                                    <Button Grid.Column="2" Content="Delete User" x:Name="BtnDelete" 
+                                            Command="{Binding DataContext.DeleteUserFromDatabaseCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
                                             CommandParameter="{Binding}" Background="Crimson" Margin="5"/>
                                     </Grid>
                                 </StackPanel>

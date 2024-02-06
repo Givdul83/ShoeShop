@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using System.Configuration;
 using System.Data;
 using System.Windows;
+using UserMobileApp.ViewModels;
+using UserMobileApp.Views;
 
 namespace UserMobileApp
 {
@@ -36,6 +38,10 @@ namespace UserMobileApp
                     services.AddTransient<ProfileAddressService>();
                     services.AddSingleton<MainWindow>();
                     services.AddSingleton<MainViewModel>();
+                    services.AddTransient<UserViewModel>();
+                    services.AddTransient<UserView>();
+                    services.AddTransient<ProductViewModel>();
+                    services.AddTransient<ProductView>();
 
                 }).Build();
 
