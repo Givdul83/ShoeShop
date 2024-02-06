@@ -68,13 +68,13 @@
                                         <ColumnDefinition Width="auto"/>
                                     </Grid.ColumnDefinitions>
                                     <Button Grid.Column="0"  Content="Select User" x:Name="BtnSelect" Click="BtnSelect_Click"  Background="Aqua" Margin="5"/>
-                                    <Button Grid.Column="1"   Content="Show User" x:Name="BtnShow" 
-                                            
+                                    <Button Grid.Column="1"   Content="Show User" x:Name="BtnShow" Click="BtnShow_Click"
                                             Background="GreenYellow" Margin="5"
                                              CommandParameter="{Binding}" />
                                     <Button Grid.Column="2" Content="Delete User" x:Name="BtnDelete" 
-                                            Command="{Binding DeleteUserFromDataBaseCommand}" 
-                                            CommandParameter="{Binding}" Background="Crimson" Margin="5"/>
+                                             Click="BtnDelete_Click" 
+                                            CommandParameter="{Binding}"
+                                            Background="Crimson" Margin="5"/>
                                 </Grid>
                             </StackPanel>
                         </StackPanel>

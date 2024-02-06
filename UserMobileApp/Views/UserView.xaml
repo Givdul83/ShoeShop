@@ -10,13 +10,52 @@
              
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="300">
-    <Grid>
-        <StackPanel>
-            <Label Content="UserView"/>
-            <Button Content="Back to start" Command="{Binding NavigateToMainViewCommand}"/>
-        </StackPanel>
-        
-        
-        
-    </Grid>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+        <Grid Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Label Content="UserView"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" x:Name="UpdateForm">
+                <TextBlock  Text="Change First Name" Margin="2"/>
+                <TextBox x:Name="Input_FirstName" Text="{Binding UserRegForm.FirstName, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock  Text="Change Last Name" Margin="2"/>
+                <TextBox x:Name="Input_LastName" Text="{Binding UserRegForm.LastName, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Change Email" Margin="2"/>
+                <TextBox x:Name="Input_Email" Text="{Binding UserRegForm.Email, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock  Text="Change Streetname and Number" Margin="2"/>
+                <TextBox x:Name="Input_StreetName" Text="{Binding UserRegForm.StreetName, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock  Text="Change Postal Code" Margin="2"/>
+                <TextBox x:Name="Input_PostalCode" Text="{Binding UserRegForm.PostalCode, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Change City" Margin="2"/>
+                <TextBox x:Name="Input_City" Text="{Binding UserRegForm.City, UpdateSourceTrigger=PropertyChanged}" />
+                <StackPanel HorizontalAlignment="Center" Orientation="Vertical" Margin="2">
+                    <RadioButton x:Name="Btn_Private" Content="Private Customer" GroupName="TypeOfCustomerBtn" IsChecked="{Binding IsPrivateCustomerChecked, Mode=TwoWay}"/>
+                    <RadioButton x:Name="Btn_Company" Content="Business Customer" GroupName="TypeOfCustomerBtn" IsChecked="{Binding IsCompanyCustomerChecked, Mode=TwoWay}"/>
+                </StackPanel>
+                <Button Content="Update User Info" x:Name="Btn_Update_User" Command="{Binding UpdateUserInfoCommand}"/>
+                
+
+
+
+            </StackPanel>
+
+
+
+
+
+
+            <StackPanel Grid.Row="2">
+                <Button   Content="Back to start" Command="{Binding NavigateToMainViewCommand}"/>
+            </StackPanel>
+
+
+
+        </Grid>
+    </ScrollViewer>
 </UserControl>

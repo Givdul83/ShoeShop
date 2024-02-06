@@ -11,6 +11,7 @@ namespace UserMobileApp.ViewModels;
 public partial class StartViewModel : ObservableObject
 {
     private readonly BaseService _baseService;
+    private readonly IServiceProvider _serviceProvider;
 
     [ObservableProperty]
     private UserRegDto _userRegForm = new();
@@ -21,10 +22,11 @@ public partial class StartViewModel : ObservableObject
 
     private bool _isPrivateCustomerChecked = true;
 
-    public StartViewModel(BaseService baseService)
+    public StartViewModel(BaseService baseService, IServiceProvider serviceProvider)
     {
         _baseService = baseService;
         GetUsersFromDataBase();
+        _serviceProvider = serviceProvider;
     }
 
 
@@ -85,9 +87,10 @@ public partial class StartViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task DeleteUserFromDatabase(UserDto user)
+
+    public async Task DeleteUserFromDataBase(UserDto user)
     {
-        if (user != null)
+        if (user != null) 
         {
 
             await _baseService.DeleteUserAsync(user.Email);
@@ -96,4 +99,32 @@ public partial class StartViewModel : ObservableObject
     }
 
 
+    [RelayCommand]
+
+    public void NavigateToUserView(UserDto user)
+    {
+        if (user != null)
+        {
+            var userViewModel = ActivatorUtilities.CreateInstance<UserViewModel>(_serviceProvider, user);
+
+            var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
+            mainViewModel.CurrentViewModel = userViewModel;
+        }
+
+
+    }
+
+    [RelayCommand]
+
+    public void NavigateToProductView(UserDto user)
+    {
+        if(user != null)
+        {
+            var productViewModel = ActivatorUtilities.CreateInstance<ProductViewModel>(_serviceProvider, user);
+
+            var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
+            mainViewModel.CurrentViewModel = productViewModel;
+
+        }
+    }
 }

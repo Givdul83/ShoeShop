@@ -5,10 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UserMobileApp.Views"
              xmlns:viewmodels ="clr-namespace:UserMobileApp.ViewModels"
-             xmlns:view ="clr-namespace:UserMobileApp.Views"
+             xmlns:view ="clr-namespace:UserMobileApp.Views" d:DataContext="{d:DesignInstance Type=viewmodels:ProductViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="300">
     <Grid>
+        <StackPanel>
         <Label Content="ProductView"/>
+        <Button Content="Back to Start" Command="{Binding  NavigateToMainViewCommand}"/>
+        </StackPanel>
     </Grid>
 </UserControl>

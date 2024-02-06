@@ -31,5 +31,19 @@ namespace UserMobileApp.Views
             DataContext = viewModel;
         }
 
+
+
+        private void Btn_Company_Checked(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is StartViewModel viewModel)
+                viewModel.IsCompanyCustomerChecked = true;
+
+        }
+
+        private void Btn_Private_Checked(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is StartViewModel viewModel)
+                viewModel.IsPrivateCustomerChecked = true;
+        }
     }
 }

@@ -15,10 +15,9 @@ public partial class StartView : UserControl
     public StartView()
     {
         InitializeComponent();
-          
-    }
 
-    public StartView(StartViewModel viewModel) :this() 
+    }
+    public StartView(StartViewModel viewModel) : this()
     {
         DataContext = viewModel;
     }
@@ -50,13 +49,23 @@ public partial class StartView : UserControl
 
     private void BtnSelect_Click(object sender, RoutedEventArgs e)
     {
-
+        if (sender is Button button && button.DataContext is UserDto user)
+        {
+            var viewModel = DataContext as StartViewModel;
+            viewModel?.NavigateToProductView(user);
+        }
     }
 
     private void BtnShow_Click(object sender, RoutedEventArgs e)
     {
 
+        if (sender is Button button && button.DataContext is UserDto user)
+        {
+            var viewModel = DataContext as StartViewModel;
+            viewModel?.NavigateToUserView(user);
+        }
     }
+    
 
     private void BtnDelete_Click(object sender, RoutedEventArgs e)
     {
@@ -64,9 +73,10 @@ public partial class StartView : UserControl
         {
             if (DataContext is StartViewModel viewModel)
             {
-                viewModel.DeleteUserFromDatabaseCommand.Execute(user);
+                viewModel.DeleteUserFromDataBaseCommand.Execute(user);
             }
         }
 
     }
 }
+
