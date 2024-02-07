@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Contexts;
+using Infrastructure.ProductContext;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ namespace UserMobileApp
                 .ConfigureServices((context, services) =>
                 {
                     services.AddDbContext<CustomerDbContext>(x => x.UseSqlServer(@"Data Source=localhost;Initial Catalog=Customer_DB;Integrated Security=True;Trust Server Certificate=True"));
-
+                    services.AddDbContext<ProductDbContext>(x => x.UseSqlServer(@"Data Source=DESKTOP-PTC1NT1;Initial Catalog=ProductCatalog;Integrated Security=True;Encrypt=True;Trust Server Certificate=True"));
 
                     services.AddTransient<AddressRepository>();
                     services.AddTransient<CustomerRepository>();
@@ -44,6 +45,11 @@ namespace UserMobileApp
                     services.AddTransient<ProductView>();
                     services.AddTransient<StartViewModel>();
                     services.AddTransient<StartView>();
+                    services.AddTransient<ProductRepository>();
+                    services.AddTransient<PriceRepository>();
+                    services.AddTransient<ManufacturerRepository>();
+                    services.AddTransient<ImageRepository>();
+
 
                 }).Build();
 
