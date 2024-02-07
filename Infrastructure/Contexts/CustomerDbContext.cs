@@ -11,7 +11,7 @@ public partial class CustomerDbContext : DbContext
     {
 
     }
-    public CustomerDbContext(DbContextOptions options) : base(options)
+    public CustomerDbContext(DbContextOptions <CustomerDbContext> options) : base(options)
     { 
     }
 

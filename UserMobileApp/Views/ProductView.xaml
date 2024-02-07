@@ -8,10 +8,33 @@
              xmlns:view ="clr-namespace:UserMobileApp.Views" d:DataContext="{d:DesignInstance Type=viewmodels:ProductViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="300">
-    <Grid>
-        <StackPanel>
-        <Label Content="ProductView"/>
-        <Button Content="Back to Start" Command="{Binding  NavigateToMainViewCommand}"/>
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+        <Grid Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Label Content="ProductView"/>
+            </StackPanel>
+            <ListView Grid.Row="1" ItemsSource="{Binding Products}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Title}"/>
+                            <TextBlock Text="{Binding Price}"/>
+                            <TextBlock Text="{Binding Manufacturer}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <StackPanel Grid.Row="2">
+                <Button Content="Back to Start" Command="{Binding  NavigateToMainViewCommand}"/>
         </StackPanel>
     </Grid>
+    </ScrollViewer>
 </UserControl>
