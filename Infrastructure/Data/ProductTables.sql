@@ -8,28 +8,26 @@ DROP TABLE Images
 CREATE TABLE Images(
 
 Id int Identity Primary Key,
-ImageURl nvarchar(450) unique
+ImageURL nvarchar(450) unique
 
 )
 
 CREATE TABLE Manufacturers
 (
 Id int Identity Primary Key,
-Manufacturer nvarchar(50) NOT NULL
+Manufacturer nvarchar(50) unique 
 )
 
 CREATE TABLE Prices
 (
 Id int Identity Primary Key,
-Price money NOT NULL, 
-DiscountPrice money
+Price money unique
 )
 
 CREATE TABLE Products
 (
 Id int Identity Primary Key,
 Title nvarchar(100) NOT NULL,
-Info nvarchar(450),
 ManufacturerId int NOT NULL,
 PriceId int NOT NULL,
 
