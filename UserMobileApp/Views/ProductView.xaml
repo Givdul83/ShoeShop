@@ -24,6 +24,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
+                            <Image Source="{Binding ImageUrl}" Height="100" />
                             <TextBlock Text="{Binding Title}"/>
                             <TextBlock Text="{Binding Price}"/>
                             <TextBlock Text="{Binding Manufacturer}"/>

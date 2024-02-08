@@ -38,7 +38,7 @@ public class BaseProductService(ProductService productService, PriceService pric
 
                     var price = await _priceRepository.GetOneAsync(ct => ct.Id == product.PriceId);
                     var manufacturer = await _manufacturerRepository.GetOneAsync(x => x.Id == product.ManufacturerId);
-
+                    var image = await _imageRepository.GetOneAsync(x => x.Id == product.Id);
 
 
                     if (price != null && manufacturer != null && product.Images != null)
@@ -49,7 +49,7 @@ public class BaseProductService(ProductService productService, PriceService pric
                             Title = product.Title,
                             Price = price.Price1,
                             Manufacturer = manufacturer.Manufacturer1,
-                            ImageURLs = product.Images.Select(i => i.ImageUrl).ToList(),
+                            ImageUrl = image.ImageUrl,
 
                         };
 

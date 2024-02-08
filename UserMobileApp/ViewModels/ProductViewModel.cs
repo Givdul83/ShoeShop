@@ -12,19 +12,21 @@ public partial class ProductViewModel : ObservableObject
 {
    
     private readonly BaseProductService _baseProductService;
+    private readonly IServiceProvider _serviceProvider;
     private UserDto _userDto;
 
 
     [ObservableProperty]
     private ObservableCollection<ProductDto> _products;
 
-    public ProductViewModel(BaseProductService baseProductService, UserDto userDto)
+    public ProductViewModel(BaseProductService baseProductService, UserDto userDto, IServiceProvider serviceProvider)
     {
 
         _baseProductService = baseProductService;
         _products = new ObservableCollection<ProductDto>();
         ShowAllProducts();
         _userDto = userDto;
+        _serviceProvider = serviceProvider;
     }
 
     private async void ShowAllProducts()
@@ -49,9 +51,9 @@ public partial class ProductViewModel : ObservableObject
     {
 
 
-        //var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
-        //var startViewModel = _serviceProvider.GetService<StartViewModel>();
+        var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
+        var startViewModel = _serviceProvider.GetService<StartViewModel>();
 
-        //mainViewModel.CurrentViewModel = startViewModel;
+        mainViewModel.CurrentViewModel = startViewModel;
     }
 }
