@@ -12,7 +12,7 @@ namespace Infrastructure.Dtos
 
             public string ImageUrl { get; set; } = null!;
             
-            //public List<string> ImageURLs { get; set; } = new List<string>();
+            public List<string> ImageURLs { get; set; } = new List<string>();
 
     }
 }
