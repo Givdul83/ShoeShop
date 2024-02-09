@@ -6,7 +6,8 @@ using System.Diagnostics;
 
 namespace Infrastructure.Services;
 
-public class BaseProductService(ProductService productService, PriceService priceService, ManufacturerService manufacturerService, ImageService imageService, ImageRepository imageRepository, ManufacturerRepository manufacturerRepository, PriceRepository priceRepository, ProductRepository productRepository)
+public class BaseProductService(ProductService productService, PriceService priceService, ManufacturerService manufacturerService, ImageService imageService, ImageRepository imageRepository,
+    ManufacturerRepository manufacturerRepository, PriceRepository priceRepository, ProductRepository productRepository, ProductImagesRepository productImagesRepository)
 {
     private readonly ProductService _productService = productService;
     private readonly PriceService _priceService = priceService;
@@ -16,7 +17,7 @@ public class BaseProductService(ProductService productService, PriceService pric
     private readonly ManufacturerRepository _manufacturerRepository = manufacturerRepository;
     private readonly PriceRepository _priceRepository = priceRepository;
     private readonly ProductRepository _productRepository = productRepository;
-
+    private readonly ProductImagesRepository _productImagesRepository = productImagesRepository;
 
 
 
@@ -36,20 +37,15 @@ public class BaseProductService(ProductService productService, PriceService pric
                 foreach (var product in products)
                 {
 
-                    var price = await _priceRepository.GetOneAsync(ct => ct.Id == product.PriceId);
-                    var manufacturer = await _manufacturerRepository.GetOneAsync(x => x.Id == product.ManufacturerId);
-                    var image = await _imageRepository.GetOneAsync(x => x.Id == product.Id);
 
-
-                    if (price != null && manufacturer != null && product.Images != null)
-                    {
+                    var image = product.Images.FirstOrDefault();
 
                         var productDto = new ProductDto
                         {
                             Title = product.Title,
-                            Price = price.Price1,
-                            Manufacturer = manufacturer.Manufacturer1,
-                            ImageUrl = image.ImageUrl,
+                            Price = Math.Round(product.Price.Price1),
+                            Manufacturer = product.Manufacturer.Manufacturer1,
+                            ImageUrl = image?.ImageUrl,
 
                         };
 
@@ -59,16 +55,15 @@ public class BaseProductService(ProductService productService, PriceService pric
                 return productsDtos;
             }
 
-
-
-            return null!;
-        }
-
         catch (Exception ex)
         {
             Debug.WriteLine("Error ::GetAllProductsAsync " + ex.Message);
             return null!;
         }
+
+        
+
+       
 
 
     }

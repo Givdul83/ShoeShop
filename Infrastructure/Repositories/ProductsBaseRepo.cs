@@ -118,5 +118,20 @@ namespace Infrastructure.Repositories
             }
             return false;
         }
+
+
+        public virtual async Task<IEnumerable<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> expression)
+        {
+            try
+            {
+                var entities = await _context.Set<TEntity>().Where(expression).ToListAsync();
+                return entities;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ERROR FindAllAsync::" + ex.Message);
+                return Enumerable.Empty<TEntity>();
+            }
+        }
     }
 }

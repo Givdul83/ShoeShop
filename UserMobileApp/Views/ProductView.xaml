@@ -7,7 +7,7 @@
              xmlns:viewmodels ="clr-namespace:UserMobileApp.ViewModels"
              xmlns:view ="clr-namespace:UserMobileApp.Views" d:DataContext="{d:DesignInstance Type=viewmodels:ProductViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="300">
+             d:DesignHeight="450" d:DesignWidth="400">
     
     <ScrollViewer VerticalScrollBarVisibility="Auto" >
         <Grid Margin="30">
@@ -15,25 +15,131 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
+                
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0">
                 <Label Content="ProductView"/>
             </StackPanel>
-            <ListView Grid.Row="1" ItemsSource="{Binding Products}">
+            <ListView Grid.Row="1" ItemsSource="{Binding Products}" Background="Beige" HorizontalAlignment="Center">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <Image Source="{Binding ImageUrl}" Height="100" />
-                            <TextBlock Text="{Binding Title}"/>
-                            <TextBlock Text="{Binding Price}"/>
-                            <TextBlock Text="{Binding Manufacturer}"/>
+                            <Grid HorizontalAlignment="Center">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+
+                                </Grid.RowDefinitions>
+
+                                <Image Grid.Row="0" HorizontalAlignment="Center" Source="{Binding ImageUrl}" Height="120" Width="250"  />
+                                <StackPanel Grid.Row="1" HorizontalAlignment="Center">
+                                    <TextBlock>
+                                        <Run Text="{Binding Title}"/>
+                                    </TextBlock> 
+                                    <TextBlock>
+                                        <Run Text="PRICE:"/>
+                                        <Run Text="{Binding Price}"/>
+                                        <Run Text="SEK"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="BRAND:"/>
+                                        <Run Text="{Binding Manufacturer}"/>
+                                         
+                                    </TextBlock>
+                                    <TextBlock />
+
+                                </StackPanel>
+                              
+                                <StackPanel Grid.Row="2">
+                                    <Button x:Name="AddToOrder" Click="AddToOrder_Click"  Content="Add To Cart" Margin="0,0,0,10" Width ="100" HorizontalAlignment="Center" Background="CadetBlue"/>
+                                </StackPanel>
+                                </Grid>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
-            <StackPanel Grid.Row="2">
+            <TextBlock Grid.Row="2" >
+                <Run Text="Ordering Customer:"/>
+                <Run Text="{Binding FirstName, Mode=OneWay}"/>
+                <Run Text="{Binding LastName, Mode=OneWay}"/>
+
+            </TextBlock>
+            <ListView Grid.Row="3" ItemsSource="{Binding Order}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Grid.Row="0" Grid.Column="0" Margin="2">
+                                    <TextBlock>
+                                        <Run Text="Model: "/>
+                                        <Run Text="{Binding Title}"/>
+                                    </TextBlock>
+
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Grid.Column="0" Margin="2">
+                                    <TextBlock>
+                                        <Run Text="Price: "/>
+                                        <Run Text="{Binding Price}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                                <Button Grid.Row="0" Grid.Column="1" x:Name="RemoveFromOrder" Click="RemoveFromOrder_Click" Content="Remove" Width="60" Background="Red" Margin="20,0,0,0" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <StackPanel x:Name="ShowSum" Grid.Row="4" HorizontalAlignment="Center" Visibility="Collapsed">
+                <TextBlock>
+                    <Run Text="Total Amount To Pay:"/>
+                    <Run Text="{Binding Sum,  Mode=OneWay}"/>
+                    <Run Text="SEK"/>
+                </TextBlock>
+             
+            </StackPanel>
+            <StackPanel Grid.Row="5" >
+                <Button x:Name="SendOrder" Click="SendOrder_Click" Content="Send Order" 
+                        Width="80" HorizontalAlignment="Center" Background="DeepSkyBlue"
+                        Visibility="Collapsed"/>
+
+                <Grid Visibility="Collapsed" x:Name="OrderConfirmation" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                             <RowDefinition Height="auto"/>
+                             <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Order Submited Succsefully"/>
+                    <TextBlock Grid.Row="1" Text="Products will be sent to:"/>
+                    <TextBlock Grid.Row="2" Text="{Binding StreetAddress, Mode=OneWay}"/>
+                    <TextBlock Grid.Row="3">
+                        <Run Text="{Binding PostalCode, Mode=OneWay}"/>
+                        <Run Text="{Binding City, Mode=OneWay}"/>
+                    </TextBlock>
+                    <TextBlock Grid.Row="4" Text="As Soon As Humanly Possible"/>
+
+
+
+
+                </Grid>
+                
+            </StackPanel>
+            <StackPanel Grid.Row="6">
                 <Button Content="Back to Start" Command="{Binding  NavigateToMainViewCommand}"/>
         </StackPanel>
     </Grid>

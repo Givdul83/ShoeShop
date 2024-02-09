@@ -53,7 +53,8 @@ namespace UserMobileApp
                     services.AddTransient<ProductService>();
                     services.AddTransient<PriceService>();
                     services.AddTransient<ManufacturerService>();
-                    services.AddTransient<ImageService>();    
+                    services.AddTransient<ImageService>();
+                    services.AddTransient<ProductImagesRepository>();
 
                 }).Build();
 
