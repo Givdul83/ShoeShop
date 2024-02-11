@@ -50,11 +50,23 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
                     {
                         var profileAddress = await _profileAddressService.CreateProfileAddressAsync(profile.Id, address.Id);
                     }
+                    else return false;
+                }
+                else
+                {
+                    return false;
                 }
 
             }
+            else { 
+                return false; 
+            }
+
             return true;
         }
+      
+
+       
 
         catch (Exception ex)
         {
@@ -63,29 +75,7 @@ public class BaseService(AddressRepository addressRepository, ProfileRepository 
         }
     }
 
-    //public async Task<UserDto> GetUserDtoAsync(string email)
-    //{
-    //    try
-    //    {
-    //        var foundCustomer = await _customerRepository.GetOneAsync(x => x.Email == email);
-    //        var foundCustomerType = await _customerTypeRepository.GetOneAsync(x => x.Id == foundCustomer.CustomerTypeId);
-    //        var foundProfile = await _profileRepository.GetOneAsync(x => x.CustomerId == foundCustomer.Id);
-    //        var foundProfileAddress = await _profileAddressRepository.GetOneAsync(x => x.ProfileId == foundProfile.Id);
-    //        var foundAddress = await _addressRepository.GetOneAsync(x => x.Id == foundProfileAddress.AddressId);
-    //        var foundDto = UserDto.FromEntities(foundCustomer, foundProfile, foundAddress, foundCustomerType);
-
-    //        return foundDto;
-    //    }
-
-    //    catch (Exception ex)
-    //    {
-    //        Debug.WriteLine("Error GetUserDtoAsync:: " + ex.Message);
-    //        return null!;
-    //    }
-    //    {
-
-    //    }
-    //}
+   
 
 
     public async Task<bool> ControlUserExistAsync(string email)

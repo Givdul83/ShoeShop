@@ -7,9 +7,7 @@ using UserMobileApp.ViewModels;
 
 namespace UserMobileApp.Views;
 
-/// <summary>
-/// Interaction logic for StartView.xaml
-/// </summary>
+
 public partial class StartView : UserControl
 {
     public StartView()
